@@ -6,7 +6,7 @@ const router = Router();
 router.get("/", async(req, res) => {
     try {
         const movies = await movieModel.find();
-        res.send({status: "success", payload: movies});
+        res.cookie('CoderCookie', 'esta es una cookie firmada', {maxAge: 10000000, signed: true}).send({status: "success", payload: movies});
     } catch (error) {
         console.log(error);
     }
@@ -31,6 +31,8 @@ router.post("/", async(req, res) => {
 
 router.get("/:mid", async (req, res) => {
     try {
+        console.log("cookie sin firmar", req.cookies)
+        console.log("cookie firmada", req.signedCookies)
         const {mid} = req.params;
         const movie =  await movieModel.findById(mid);
         res.send({status: "success", payload: movie});

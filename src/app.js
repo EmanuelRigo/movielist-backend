@@ -1,6 +1,7 @@
 import express from 'express';
 import http from 'http';
 import logger from 'morgan';
+import cookieParser from 'cookie-parser';
 
 import productsRouter from './routers/api/movies.router.js';
 import connectDB from './config/index.js';
@@ -10,6 +11,8 @@ const port = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(logger('dev'));
+app.use(cookieParser('codercookieCAMBIARENV'));
 
 //midleware it can be deleted
 app.use((req, res, next) => {
@@ -31,7 +34,7 @@ app.use((req, res, next) => {
 // };
 
 
-app.use(logger('dev'));
+
 
 connectDB()
 // //HTTP server

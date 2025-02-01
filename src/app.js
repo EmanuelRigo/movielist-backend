@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import logger from 'morgan';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
 
 import productsRouter from './routers/api/movies.router.js';
 import connectDB from './config/index.js';
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(cookieParser('codercookieCAMBIARENV'));
+app.use(session({secret: 'coderSECRETCAMBIARENV', resave: true, saveUninitialized: true}));
 
 //midleware it can be deleted
 app.use((req, res, next) => {

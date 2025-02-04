@@ -4,7 +4,7 @@ import logger from 'morgan';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 
-import productsRouter from './routers/api/movies.router.js';
+import indexRouter from './routers/api/index.js';
 import connectDB from './config/index.js';
 //server
 const app = express();
@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
     res.send('Hello World');
 });
 
-app.use('/api/movies', productsRouter);
+app.use('/api/', indexRouter);
 
 //start server
 app.listen(port, () => {

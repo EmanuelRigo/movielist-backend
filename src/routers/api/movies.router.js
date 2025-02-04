@@ -1,5 +1,5 @@
 import { Router } from "express";
-import movieModel from "../../models/movies.model.js";
+import movieModel from "../../dao/mongo/models/movies.model.js";
 import { error } from "console";
 
 const router = Router();

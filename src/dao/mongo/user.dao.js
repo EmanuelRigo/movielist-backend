@@ -12,6 +12,10 @@ class UserDao {
         return movie;
     }
 
+    async getByEmail(email) {
+        const user = await userModel.findOne({email});
+        return user;}
+
     async create(data) {
         const movie = await userModel.create(data)
         return movie;

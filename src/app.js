@@ -1,30 +1,39 @@
-import express from 'express';
-import http from 'http';
-import logger from 'morgan';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
+import express from "express";
+import http from "http";
+import logger from "morgan";
+import cookieParser from "cookie-parser";
+import session from "express-session";
 
-import indexRouter from './routers/api/index.js';
-import connectDB from './config/index.js';
+import indexRouter from "./routers/api/index.js";
+import connectDB from "./config/index.js";
+import { initializePassport } from "./config/passport.config.js";
 //server
 const app = express();
 const port = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(logger('dev'));
-app.use(cookieParser('codercookieCAMBIARENV'));
-app.use(session({secret: 'coderSECRETCAMBIARENV', resave: true, saveUninitialized: true}));
+app.use(logger("dev"));
+app.use(cookieParser("codercookieCAMBIARENV"));
+app.use(
+  session({
+    secret: "coderSECRETCAMBIARENV",
+    resave: true, // mantiene la session
+    saveUninitialized: true, // guarda la session
+  })
+);
 
-//midleware it can be deleted
+initializePassport()
+
+//middleware it can be deleted
 app.use((req, res, next) => {
-    console.log('Time:', Date.now());
-    next();
+  console.log("Time:", Date.now());
+  next();
 });
-//another midleware it can be deleted
+//another middleware it can be deleted
 app.use((req, res, next) => {
-    console.log('Request Type:', req.method);
-    next();
+  console.log("Request Type:", req.method);
+  next();
 });
 
 // const auth = (req, res, next) => {
@@ -35,25 +44,20 @@ app.use((req, res, next) => {
 //     }
 // };
 
-
-
-
-connectDB()
+connectDB();
 // //HTTP server
 // const server = http.createServer(app);
 
-app.get('/', (req, res) => {
-    res.send('Hello World');
+app.get("/", (req, res) => {
+  res.send("Hello World");
 });
 
-app.use('/api/', indexRouter);
+app.use("/api/", indexRouter);
 
 //start server
 app.listen(port, () => {
-    console.log('Server started on port ' + port);
+  console.log("Server started on port " + port);
 });
 
 // //routers
 // app.use(indexRouter);
-
-

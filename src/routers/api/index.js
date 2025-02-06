@@ -5,6 +5,6 @@ import sessionRouter from "./session.router.js";
 const router = Router(); 
 
 router.use('/movies', moviesRouter);
-router.use('/session', sessionRouter);
+router.use('/sessions', sessionRouter);
 
 export default router;

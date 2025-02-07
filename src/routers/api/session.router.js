@@ -2,8 +2,22 @@ import { Router } from "express";
 import { userDao } from "../../dao/mongo/user.dao.js";
 import { createHash, isValidPassword } from "../../utils/hashPassword.js";
 import passport from "passport";
+import { createToken, verifyToken } from "../../utils/jwt.js"
+
 
 const router = Router();
+
+router.get("/current" , async (req, res) => {
+  console.log("hola")
+  // const token = req.headers.authorization.split(" ")[1]
+  const token = req.cookies.token
+  const validToken = verifyToken(token)
+  if (!validToken) return res.send("not token")
+  const user = await userDao.getByEmail(validToken.email)
+
+  res.json({status: "ok", user})
+
+})
 
 router.post(
   "/register",
@@ -30,7 +44,9 @@ router.post("/login", passport.authenticate("login"), async (req, res) => {
       email: req.user.email,
       role: req.user.role,
     };
-    res.status(200).json({ status: "success", payload: req.session.user });
+    const token = createToken(req.user)
+    res.cookie("token", token, {httpOnly: true})
+    res.status(200).json({ status: "success", payload: req.session.user, token });
   } catch (error) {
     console.log(error);
     res
@@ -94,6 +110,13 @@ router.put("/restore-password", async (req, res) => {
       res.status(200).json({ status: "success", session: req.user });
     }
   );
+
+
+  
+
+
+
+
 });
 
 export default router;

@@ -1,12 +1,15 @@
 import passport from "passport";
 import local from "passport-local";
 import google from "passport-google-oauth20";
+import jwt from "passport-jwt"
 import { userDao } from "../dao/mongo/user.dao.js";
 import { createHash, isValidPassword } from "../utils/hashPassword.js";
+import { cookieExtractor } from "../utils/cookieExtractor.js";
 
 const LocalStrategy = local.Strategy;
 const GoogleStrategy = local.Strategy;
-
+const JWTStrategy = jwt.Strategy
+const ExtractJWT = jwt.ExtractJwt
 //global strategies function
 
 export const initializePassport = () => {
@@ -93,6 +96,21 @@ export const initializePassport = () => {
         }
     })
   );
+
+
+  //JWT strategy
+  passport.use("jwt", new JWTStrategy({jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), secretOrKey:"CODIGOSECRETO"},
+      async(jwt_payload, done)=> {
+        try {
+          const {email} = jwt_payload
+          const user = await userDao.getByEmail(email)
+          done(null, user)
+        } catch (error) {
+          done(error)
+        }
+      }
+    ))
+
 
   //Serialization and deserialization of User permite almacenar y recuperar información del usuario en la sesión
   passport.serializeUser((user, done) => {

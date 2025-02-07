@@ -3,25 +3,27 @@ import { userDao } from "../../dao/mongo/user.dao.js";
 import { createHash, isValidPassword } from "../../utils/hashPassword.js";
 import passport from "passport";
 import { createToken, verifyToken } from "../../utils/jwt.js"
+import { passportCall } from "../../middlewares/passportCall.middleware.js";
+import { authorization } from "../../middlewares/authorization.middleware.js";
 
 
 const router = Router();
 
-router.get("/current" , async (req, res) => {
-  console.log("hola")
-  // const token = req.headers.authorization.split(" ")[1]
-  const token = req.cookies.token
-  const validToken = verifyToken(token)
-  if (!validToken) return res.send("not token")
-  const user = await userDao.getByEmail(validToken.email)
+router.get("/current" , passportCall("jwt"), authorization('user'), async (req, res) => {
+  // console.log("hola")
+  // // const token = req.headers.authorization.split(" ")[1]
+  // const token = req.cookies.token
+  // const validToken = verifyToken(token)
+  // if (!validToken) return res.send("not token")
+  // const user = await userDao.getByEmail(validToken.email)
 
-  res.json({status: "ok", user})
+  res.json({status: "ok", user: req.user})
 
 })
 
 router.post(
   "/register",
-  passport.authenticate("register"),
+  passportCall("register"),
   async (req, res) => {
     try {
       res
@@ -36,7 +38,7 @@ router.post(
   }
 );
 
-router.post("/login", passport.authenticate("login"), async (req, res) => {
+router.post("/login", passportCall("login"), async (req, res) => {
   try {
     req.session.user = {
       username: req.user.username,

@@ -5,11 +5,13 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 
 import indexRouter from "./routers/api/index.js";
-import connectDB from "./config/index.js";
+import connectDB from "./config/mongoDB.config.js";
 import { initializePassport } from "./config/passport.config.js";
+
+import envsUtils from "./utils/envs.utils.js";
 //server
 const app = express();
-const port = process.env.PORT || 8080;
+const port = envsUtils.PORT || 8080;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

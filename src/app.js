@@ -16,10 +16,10 @@ const port = envsUtils.PORT || 8080;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
-app.use(cookieParser("codercookieCAMBIARENV"));
+app.use(cookieParser(envsUtils.SECRET_KEY));
 app.use(
   session({
-    secret: "coderSECRETCAMBIARENV",
+    secret: envsUtils.SECRET_KEY,
     resave: true, // mantiene la session
     saveUninitialized: true, // guarda la session
   })
@@ -38,13 +38,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// const auth = (req, res, next) => {
-//     if (!req.user) {
-//        return res.send('Not allowed');
-//     } else {
-//         res.status(401).send("Allowed");
-//     }
-// };
 
 connectDB();
 // //HTTP server
@@ -60,6 +53,3 @@ app.use("/api/", indexRouter);
 app.listen(port, () => {
   console.log("Server started on port " + port);
 });
-
-// //routers
-// app.use(indexRouter);

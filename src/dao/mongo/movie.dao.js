@@ -1,4 +1,4 @@
-import movieModel from "./models/movies.model";
+import movieModel from "./models/movies.model.js";
 
 class MovieDao {
 
@@ -29,4 +29,5 @@ class MovieDao {
 
 }
 
-export default MovieDao;
+const movieDao = new MovieDao()
+export default movieDao

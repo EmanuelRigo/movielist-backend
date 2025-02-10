@@ -1,29 +1,26 @@
-import MovieDao from "../dao/mongo/movie.dao"
+import MovieDao from "../dao/mongo/movie.dao.js";
 
-export class MoviesServices {
-
+class MoviesServices {
     async getAll(filter, options) {
-        return await MovieDao.getAll()
+        return await MovieDao.getAll();
     }
 
     async getById(id) {
-        return await MovieDao.getById(id)
+        return await MovieDao.getById(id);
     }
 
     async create(data) {
-        return await productDao.create(data)
+        return await MovieDao.create(data);
     }
 
     async deleteOne(id) {
-        return await MovieDao.deleteOne(id)
+        return await MovieDao.deleteOne(id);
     }
 
     async update(id, data) {
-        return await MovieDao.update(id, data)
+        return await MovieDao.update(id, data);
     }
-
-   
-
 }
 
-export const moviesServices = new MoviesServices()
+const moviesServices = new MoviesServices();
+export default moviesServices;

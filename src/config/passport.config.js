@@ -6,6 +6,8 @@ import { userDao } from "../dao/mongo/user.dao.js";
 import { createHash, isValidPassword } from "../utils/hashPassword.js";
 import { cookieExtractor } from "../utils/cookieExtractor.js";
 
+import envsUtils from "../utils/envs.utils.js";
+
 const LocalStrategy = local.Strategy;
 const GoogleStrategy = local.Strategy;
 const JWTStrategy = jwt.Strategy
@@ -23,7 +25,6 @@ export const initializePassport = () => {
         // passreqtocallback allows us to access the request in the function
         // usernamefield "email" allow us to define the field that we will use as user
         // done is a function that we must call when we finish processing the authentication
-
         try {
           const { name, role } = req.body;
 
@@ -99,7 +100,7 @@ export const initializePassport = () => {
 
 
   //JWT strategy
-  passport.use("jwt", new JWTStrategy({jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), secretOrKey:"CODIGOSECRETO"},
+  passport.use("jwt", new JWTStrategy({jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]), secretOrKey:envsUtils.JWT_SECRET},
       async(jwt_payload, done)=> {
         try {
           const {email} = jwt_payload

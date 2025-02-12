@@ -3,9 +3,10 @@ import http from "http";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import cors from 'cors'
 
 import indexRouter from "./routers/api/index.js";
-import connectDB from "./config/mongoDB.config.js";
+import MongoSingleton from "./config/mongoDB.config.js";
 import { initializePassport } from "./config/passport.config.js";
 
 import envsUtils from "./utils/envs.utils.js";
@@ -24,6 +25,9 @@ app.use(
     saveUninitialized: true, // guarda la session
   })
 );
+app.use(cors())
+
+MongoSingleton.getInstance()
 
 initializePassport()
 
@@ -39,7 +43,7 @@ app.use((req, res, next) => {
 });
 
 
-connectDB();
+
 // //HTTP server
 // const server = http.createServer(app);
 

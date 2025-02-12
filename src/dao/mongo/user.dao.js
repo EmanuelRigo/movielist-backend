@@ -30,7 +30,6 @@ class UserDao {
         const movie = await userModel.findByIdAndDelete(id);
         return movie;
     }
-
 }
 
 export const userDao = new UserDao();

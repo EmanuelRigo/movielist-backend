@@ -1,10 +1,24 @@
-import { Router } from "express";
 import moviesRouter from "./movies.router.js";
 import sessionRouter from "./session.router.js";
+import CustomRouter from "../../utils/CustomRouter.util.js";
 
-const router = Router(); 
+class IndexRouter extends CustomRouter {
 
-router.use('/movies', moviesRouter);
-router.use('/sessions', sessionRouter);
+    constructor(){
+        super()
+        this.init()
+    }
+    init = ()=> {
+        this.use("/movies", ["PUBLIC"], moviesRouter)
+        this.use("/sessions", ["PUBLIC"], sessionRouter)
+    }
 
-export default router;
+}
+
+let indexRouter = new IndexRouter()
+export default indexRouter.getRouter()
+
+
+
+///////////////////////
+

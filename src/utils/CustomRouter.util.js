@@ -1,8 +1,10 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
-import envUtil from "./env.util.js";
-import dao from "../dao/factory.js";
-const{ UsersManager} = dao;
+import envsUtils from "./envs.utils.js";
+// import dao from "../dao/factory.js";
+// const{ UsersManager} = dao;
+import { userDao } from "../dao/mongo/user.dao.js";
+
 
 class CustomRouter {
   constructor() {
@@ -42,7 +44,7 @@ class CustomRouter {
         (policies.includes("USER") && role === "USER") ||
         (policies.includes("ADMIN") && role === "ADMIN")
       ) {
-        const user = await UsersManager.readById(user_id);
+        const user = await userDao.getById(user_id)
         if (!user) return res.json401();
         req.user = user;
         return next();

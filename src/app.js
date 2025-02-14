@@ -9,6 +9,8 @@ import indexRouter from "./routers/api/index.js";
 import MongoSingleton from "./config/mongoDB.config.js";
 import { initializePassport } from "./config/passport.config.js";
 
+import pathHandler from "./middlewares/pathHandler.middleware.js";
+
 import envsUtils from "./utils/envs.utils.js";
 //server
 const app = express();
@@ -57,3 +59,6 @@ app.use("/api/", indexRouter);
 app.listen(port, () => {
   console.log("Server started on port " + port);
 });
+
+
+app.use(pathHandler)

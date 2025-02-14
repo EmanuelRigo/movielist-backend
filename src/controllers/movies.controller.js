@@ -1,59 +1,70 @@
 import { response } from "express";
+import mongoose from "mongoose";
 import moviesServices from "../services/movies.services.js";
 
 class MovieController {
-
   async getAll(req, res) {
-      const response = await moviesServices.getAll();
-      const message = "movies read"
-      return res.json201(response,  message)
+    const response = await moviesServices.getAll();
+    const message = "movies read";
+    return res.json201(response, message);
   }
 
   async getById(req, res) {
-    const mid = req.params.mid
-    const response = await moviesServices.getById(mid)
-    const message = "movie read"
+    const mid = req.params.mid;
+    const response = await moviesServices.getById(mid);
+    const message = "movie read";
     if (response) {
-      return res.json201(response, message)
+      return res.json201(response, message);
     } else {
-      return res.json404()
+      return res.json404();
     }
   }
 
   async create(req, res) {
-  const message = "movie created";
-  const data = req.body;
-  const response = await moviesServices.create(data)
-  return res.json201(response, message);
+    const message = "movie created";
+    const data = req.body;
+    const response = await moviesServices.create(data);
+    return res.json201(response, message);
   }
 
   async update(req, res) {
-    try {
-        const { mid } = req.params;
-        const { title, director, year } = req.body;
-        if (!title || !director || !year) {
-          return res
-            .status(400)
-            .send({ status: "failed", message: "Missing required fields" });
-        }
-        const movie = await moviesServices.update(
-          { _id: mid },
-          { title, director, year },
-          { new: true }
-        );
-        res.send({ status: "success", payload: movie });
-      } catch (error) {
-        console.log(error);
-      }
+    const { mid } = req.params;
+    const { title, director, year } = req.body;
+
+    if (!title && !director && !year) {
+      const message = "Missing required fields";
+      return res.json400(message);
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(mid)) {
+      return res.json404();
+    }
+
+    const message = "PRODUCT UPDATED";
+    const response = await moviesServices.update(mid, { title, director, year });
+
+    if (response) {
+      console.log(response);
+      return res.json201(response, message);
+    } else {
+      console.log("response", response);
+      return res.json404();
+    }
   }
 
   async deleteOne(req, res) {
-    try {
-        const { mid } = req.params;
-        const movie = await moviesServices.deleteOne(mid)
-        res.send({ status: "success", payload: movie });
-      } catch (error) {
-        console.log(error);
+      const { mid } = req.params;
+  
+      if (!mongoose.Types.ObjectId.isValid(mid)) {
+        return res.json404();
+      }
+  
+      const message = "movie deleted";
+      const response = await moviesServices.deleteOne(mid);
+      if (response) {
+        return res.json201(response, message);
+      } else {
+        return res.json404();
       }
   }
 }

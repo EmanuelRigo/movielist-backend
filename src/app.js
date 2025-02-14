@@ -20,6 +20,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
 app.use(cookieParser(envsUtils.SECRET_KEY));
+app.use(pathHandler)
+app.use(errorHandler);
 app.use(
   session({
     secret: envsUtils.SECRET_KEY,
@@ -44,8 +46,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
 // //HTTP server
 // const server = http.createServer(app);
 
@@ -61,4 +61,3 @@ app.listen(port, () => {
 });
 
 
-app.use(pathHandler)

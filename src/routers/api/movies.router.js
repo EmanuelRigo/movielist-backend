@@ -63,13 +63,3 @@ export default movieRouter.getRouter()
 //   });
 // });
 ///////
-
-
-//// router.get("/", movieController.getAll);
-//// router.get("/:mid", movieController.getById);
-//// router.post("/", movieController.create);
-//// router.put("/:mid", movieController.update);
-
-// router.delete("/:mid", movieController.deleteOne);
-
-// export default router;

@@ -1,43 +1,30 @@
+import { response } from "express";
 import moviesServices from "../services/movies.services.js";
 
 class MovieController {
+
   async getAll(req, res) {
-    try {
-      const movies = await moviesServices.getAll();
-      res
-        .cookie("CoderCookie", "esta es una cookie firmada", {
-          maxAge: 10000000,
-          signed: true,
-        })
-        .send({ status: "success", payload: movies });
-    } catch (error) {
-      console.log(error);
-    }
+      const response = await moviesServices.getAll();
+      const message = "movies read"
+      return res.json201(response,  message)
   }
 
   async getById(req, res) {
-    try {
-      const mid = req.params.mid;
-      const movie = await moviesServices.getById(mid);
-      res.send({ status: "success", payload: movie });
-    } catch (error) {
-      console.log(error);
+    const mid = req.params.mid
+    const response = await moviesServices.getById(mid)
+    const message = "movie read"
+    if (response) {
+      return res.json201(response, message)
+    } else {
+      return res.json404()
     }
   }
 
   async create(req, res) {
-    try {
-      const { title, director, year } = req.body;
-      if (!title || !director || !year) {
-        return res
-          .status(400)
-          .send({ status: "failed", message: "Missing required fields" });
-      }
-      const movie = await moviesServices.create({ title, director, year });
-      res.send({ status: "success", payload: movie });
-    } catch (error) {
-      console.log(error);
-    }
+  const message = "movie created";
+  const data = req.body;
+  const response = await moviesServices.create(data)
+  return res.json201(response, message);
   }
 
   async update(req, res) {

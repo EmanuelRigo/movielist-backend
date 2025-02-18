@@ -3,7 +3,7 @@ import userModel from "./models/user.model.js";
 class UserDao {
 
     async getAll() {
-        const movies = await userModel.find();
+        const movies = await userModel.find().lean();
         return movies;
     }
 

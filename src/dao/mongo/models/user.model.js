@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const nameCollection = "user";
+const nameCollection = "users";
 
 const userSchema = new Schema({
     username: {

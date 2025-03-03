@@ -29,9 +29,10 @@ class MovieController {
 
   async update(req, res) {
     const { mid } = req.params;
-    const { title, director, year } = req.body;
+    console.log(req.body)
+    const { formats } = req.body;
 
-    if (!title && !director && !year) {
+    if (!formats) {
       const message = "Missing required fields";
       return res.json400(message);
     }
@@ -41,7 +42,7 @@ class MovieController {
     }
 
     const message = "PRODUCT UPDATED";
-    const response = await moviesServices.update(mid, { title, director, year });
+    const response = await moviesServices.update(mid, { formats});
 
     if (response) {
       console.log(response);

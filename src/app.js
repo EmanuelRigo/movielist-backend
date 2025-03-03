@@ -26,9 +26,14 @@ app.use(
     secret: envsUtils.SECRET_KEY,
     resave: true, // mantiene la session
     saveUninitialized: true, // guarda la session
+    cookie: {
+      maxAge: 60000,
+    },
   })
 );
-app.use(cors())
+
+//CORS
+app.use(cors({ origin: true, credentials: true }));
 
 
 MongoSingleton.getInstance()

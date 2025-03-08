@@ -18,13 +18,22 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        index: true
     },
     role: {
         type: String,
         required: true,
         enum: ['user', 'admin'],
         default: 'user'
+    },
+    verifyUser: {
+        type: Boolean,
+        default: false
+    },
+    verifyCode: {
+        type: String,
+        required: false
     }
 });
 

@@ -1,138 +1,148 @@
-import { Router } from "express";
-import { userDao } from "../../dao/mongo/user.dao.js";
-import { createHash, isValidPassword } from "../../utils/hashPassword.js";
-import passport from "passport";
-import { createToken, verifyToken } from "../../utils/jwt.js"
-import { passportCall } from "../../middlewares/passportCall.middleware.js";
-import { authorization } from "../../middlewares/authorization.middleware.js";
+import CustomRouter from "../../utils/CustomRouter.util";
+import { verifyTokenUtil } from "../../utils/token.util.js";
+import passportCb from "../../middlewares/passportCb.middleware.js";
 
-import CustomRouter from "../../utils/CustomRouter.util.js";
+const { UsersManager } = dao;
+const {readById} = UsersManager;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-const router = Router();
-
-router.get("/current" , passportCall("jwt"), authorization('user'), async (req, res) => {
-  // console.log("hola")
-  // // const token = req.headers.authorization.split(" ")[1]
-  // const token = req.cookies.token
-  // const validToken = verifyToken(token)
-  // if (!validToken) return res.send("not token")
-  // const user = await userDao.getByEmail(validToken.email)
-
-  res.json({status: "ok", user: req.user})
-
-})
-
-router.post(
-  "/register",
-  passportCall("register"),
-  async (req, res) => {
-    try {
-      res
-        .status(201)
-        .json({ status: "success", payload: "Usuario Registrado" });
-    } catch (error) {
-      console.log(error);
-      res
-        .status(500)
-        .send({ status: "failed", message: "Internal Server Error" });
-    }
+class SessionRouter extends CustomRouter {
+  constructor() {
+    super();
+    this.init();
   }
-);
+  init = () => {
+    //REGISTER
+    this.create(
+      "/register",
+      ["PUBLIC"],
+      passportCb("register", { session: false }),
+      register
+    );
 
-router.post("/login", passportCall("login"), async (req, res) => {
-  try {
-    req.session.user = {
-      username: req.user.username,
-      name: req.user.name,
-      email: req.user.email,
-      role: req.user.role,
-    };
-    const token = createToken(req.user)
-    res.cookie("token", token, {httpOnly: true})
-    res.status(200).json({ status: "success", payload: req.session.user, token });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .send({ status: "failed", message: "Internal Server Error" });
+    //LOGIN
+    this.create(
+      "/login",
+      ["PUBLIC"],
+      passportCb("login", { session: false }),
+      login
+    );
+
+    //SIGNOUT
+    this.create(
+      "/signout",
+      ["PUBLIC"],
+      passportCb("signout", { session: false }),
+      signout
+    );
+
+    //ONLINE
+    this.create(
+      "/online",
+      ["PUBLIC"],
+      passportCb("online", { session: false }),
+      onlineToken
+    );
+
+    // GOOGLE
+    this.read(
+      "/google",
+      ["PUBLIC"],
+      passportCb("google", { scope: ["email", "profile"] })
+    );
+
+    this.read(
+      "/google/cb",
+      ["PUBLIC"],
+      passportCb("google", { session: false }),
+      google
+    );
+  };
+}
+
+async function register(req, res, next) {
+  const { _id } = req.user;
+  const message = "User Registered";
+  return res.json201(_id, message);
+}
+
+async function login(req, res, next) {
+  const token = req.token;
+  const opts = { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true };
+  const message = "USER LOGGED IN";
+  const response = "ok";
+  return res.cookie("token", token, opts).json200(response, message);
+}
+
+function signout(req, res, next) {
+  // req.session.destroy();
+  const response = "OK";
+  const message = "SIGN OUT";
+  return res.clearCookie("token").json200(response, message);
+}
+
+async function online(req, res, next) {
+  const { token } = req.headers;
+  const data = verifyTokenUtil(token);
+  const one = await readById(data.user_id);
+  if (one) {
+    return res.status(200).json({
+      message: one.email.toUpperCase() + " IS ONLINE",
+      online: true,
+    });
+  } else {
+    return res
+      .status(400)
+      .json({ message: "USER IS NOT ONLINE", online: false });
   }
-});
+}
 
-router.get("/profile", async (req, res) => {
-  try {
-    console.log("req:", req.session);
-    console.log(req.session.user);
-    if (!req.session.user) {
-      return res
-        .status(401)
-        .json({ status: "failed", message: "Unauthorized" });
-    }
-    if (req.session.user.role !== "user") {
-      return res.status(200).json({ status: "error", message: "Not allowed" });
-    }
-    res.status(200).json({ status: "success", payload: req.session.user });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .send({ status: "failed", message: "Internal Ser ver Error" });
+async function onlineToken(req, res, next) {
+  const message = req.user.email.toUpperCase() + "IS ONLINE";
+  const response = true;
+  return res.json200(response, message);
+}
+
+async function onlineToken2(req, res, next) {
+  // Obtener el token del header de Authorization
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      message: "No token provided or invalid format",
+      online: false,
+    });
   }
-});
-
-router.get("/logout", async (req, res) => {
-  try {
-    req.session.destroy();
-    res.status(200).json({ status: "success", message: "Logged out" });
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-router.put("/restore-password", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await userDao.getByEmail(email);
-
-    await userDao.update(user._id, { password: createHash(password) });
-
-    res.status(200).json({ status: "success", payload: "Password changed" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ status: "Error", message: "Internal Server Error" });
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({
+      message: "No token provided",
+      online: false,
+    });
   }
 
-  router.get(
-    "/google",
-    passport.authenticate("google", {
-      scope: [
-          "https://www.googleapis.com/auth/userinfo.email",
-        "https://www.googleapis.com/auth/userinfo.profile",
-      ], session: false
-    }),
-    (req, res) => {
-      res.status(200).json({ status: "success", session: req.user });
-    }
-  );
+  const data = verifyTokenUtil(token);
+  const user = await readById(data.user_id);
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
+      online: false,
+    });
+  }
+
+  return res.status(200).json({
+    message: user.email.toUpperCase() + " IS ONLINE",
+    online: true,
+    user: {
+      email: user.email,
+      role: user.role,
+    },
+  });
+
+}
+
+async function google(req, res, next) {
+  return res.status(200).json({ message: "USER LOGGED IN", token: req.token });
+}
 
 
-  
-
-
-
-
-});
-
-export default router;
+const sessionsRouter = new SessionRouter();
+export default sessionsRouter.getRouter();

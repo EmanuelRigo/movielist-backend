@@ -1,6 +1,6 @@
 import CustomRouter from "../../utils/CustomRouter.util.js";
 import { verifyTokenUtil } from "../../utils/token.util.js";
-import passportCb from "../../middlewares/passportCb.mid.js";
+import passportCb from "../../middlewares/passportCb.middleware.js";
 
 import dao from "../../dao/factory.js";
 const { UsersManager } = dao;
@@ -28,7 +28,7 @@ class SessionApiRouter extends CustomRouter {
       login
     );
 
-    //SINGOUT
+    //SIGNOUT
     this.create(
       "/signout",
       ["PUBLIC"],

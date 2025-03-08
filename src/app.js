@@ -21,16 +21,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
 app.use(cookieParser(envsUtils.SECRET_KEY));
-app.use(
-  session({
-    secret: envsUtils.SECRET_KEY,
-    resave: true, // mantiene la session
-    saveUninitialized: true, // guarda la session
-    cookie: {
-      maxAge: 60000,
-    },
-  })
-);
+
+
+// CONFIGURACIÓN DE SESSION CON MEMORY
+// app.use(
+//   session({
+//     secret: envsUtils.SECRET_KEY,
+//     resave: true, // mantiene la session
+//     saveUninitialized: true, // guarda la session
+//     cookie: {
+//       maxAge: 60000,
+//     },
+//   })
+// );
 
 //CORS
 app.use(cors({ origin: true, credentials: true }));

@@ -18,9 +18,10 @@ cookiesRouter.post("/create", (req, res, next) => {
 
 cookiesRouter.get("/read", (req, res, next) => {
   try {
-    const mode = req.cookies.modo 
+    const mode = req.cookies.mode
     const rolDeUsuario = req.cookies.rolDeUsuario 
     const message = "COOKIE LEÍDA";
+    console.log(mode)
     return res.status(200).json({ mode, rolDeUsuario, message });
   } catch (error) {
     return next(error);

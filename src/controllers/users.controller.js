@@ -15,6 +15,18 @@ class UserController {
     return res.json200(response, message);
   }
 
+  async getByEmail(req, res) {
+    const { email } = req.params;
+    const message = "user found";
+
+    const response = await userServices.getByEmail(email);
+    if (response) {
+      return res.json200(response, message);
+    } else {
+      return res.json404();
+    }
+  }
+
   async update(req, res) {
     const { id } = req.params;
     const data = req.body;

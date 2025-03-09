@@ -9,6 +9,8 @@ import envUtil from "../utils/env.util.js";
 import dao from "../dao/factory.js";
 import UserDTO from "../dto/user.dto.js";
 
+import { userController } from "../controllers/users.controller.js";
+
 const { UsersManager } = dao;
 const { readByEmail, create, readById, update } = UsersManager;
 
@@ -24,7 +26,7 @@ passport.use(
     },
     async (req, email, password, done) => {
       try {
-        const userExists = await readByEmail(email);
+        const userExists = await userController.getByEmail(email);
         if (userExists) {
           const info = {
             message: "User already exists",

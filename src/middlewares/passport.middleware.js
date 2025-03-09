@@ -2,17 +2,19 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
-import { createHashUtil } from "../utils/hash.util.js";
-import { verifyHashUtil } from "../utils/hash.util.js";
-import { createTokenUtil, verifyTokenUtil } from "../utils/token.util.js";
-import envUtil from "../utils/env.util.js";
-import dao from "../dao/factory.js";
-import UserDTO from "../dto/user.dto.js";
 
+import { createHashUtil, verifyHashUtil  } from "../utils/hash.util.js";
+import { createTokenUtil, verifyTokenUtil } from "../utils/token.util.js";
+
+import envUtil from "../utils/env.util.js";
 import { userController } from "../controllers/users.controller.js";
 
-const { UsersManager } = dao;
-const { readByEmail, create, readById, update } = UsersManager;
+// import dao from "../dao/factory.js";
+// import UserDTO from "../dto/user.dto.js";
+
+
+// const { UsersManager } = dao;
+// const { readByEmail, create, readById, update } = UsersManager;
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BASE_URL } = envUtil;
 
@@ -36,7 +38,7 @@ passport.use(
         }
         req.body.password = createHashUtil(password);
         const data = new UserDTO(req.body);
-        const user = await create(data);
+        const user = await userController.create(data);
         return done(null, user);
       } catch (error) {
         return done(error);
@@ -114,7 +116,7 @@ passport.use(
           };
           return done(null, false, info);
         }
-        const user = await readById(user_id);
+        const user = await userController.getById(user_id);
         return done(null, user);
       } catch (error) {
         return done(error);
@@ -137,7 +139,7 @@ passport.use(
         const { id, picture } = profile;
         let user = await readByEmail(id);
         if (!user) {
-          user = await create({
+          user = await userController.create({
             email: id,
             photo: picture,
             password: createHashUtil(id),
@@ -186,7 +188,7 @@ passport.use(
     async (data, done) => {
       try {
         const { user_id } = data;
-        const user = await readById(user_id);
+        const user = await userController.getById(user_id);
         console.log("Usuario encontrado:", user);
 
         if (!user) {
@@ -230,7 +232,7 @@ passport.use(
       try {
         const token = req.token;
         const { user_id } = verifyTokenUtil(token);
-        const user = await readById(user_id);
+        const user = await userController.getById(user_id);
         const { isOnline } = user;
         if (!isOnline) {
           const info = {

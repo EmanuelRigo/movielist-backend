@@ -44,6 +44,22 @@ class UserController {
     }
   }
 
+  async getById(req, res) {
+    const { id } = req.params;
+    const message = "user found";
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.json404();
+    }
+
+    const response = await userServices.getById(id);
+    if (response) {
+      return res.json200(response, message);
+    } else {
+      return res.json404();
+    }
+  }
+
   async deleteOne(req, res) {
     const { id } = req.params;
     const message = "user deleted";

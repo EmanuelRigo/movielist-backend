@@ -6,17 +6,19 @@ import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 import { createHashUtil, verifyHashUtil  } from "../utils/hash.util.js";
 import { createTokenUtil, verifyTokenUtil } from "../utils/token.util.js";
 
-import envUtil from "../utils/env.util.js";
-import { userController } from "../controllers/users.controller.js";
+import envsUtils from "../utils/envs.utils.js";
+// import { userController } from "../controllers/users.controller.js";
+import UserDTO from "../dto/user.dto.js";
+
+import userServices from "../services/users.services.js";
 
 // import dao from "../dao/factory.js";
-// import UserDTO from "../dto/user.dto.js";
 
 
 // const { UsersManager } = dao;
 // const { readByEmail, create, readById, update } = UsersManager;
 
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BASE_URL } = envUtil;
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, BASE_URL } = envsUtils;
 
 //--REGISTER
 passport.use(
@@ -28,7 +30,8 @@ passport.use(
     },
     async (req, email, password, done) => {
       try {
-        const userExists = await userController.getByEmail(email);
+        const userExists = await userServices.getByEmail(email);
+ 
         if (userExists) {
           const info = {
             message: "User already exists",
@@ -38,7 +41,7 @@ passport.use(
         }
         req.body.password = createHashUtil(password);
         const data = new UserDTO(req.body);
-        const user = await userController.create(data);
+        const user = await userServices.create(data);
         return done(null, user);
       } catch (error) {
         return done(error);
@@ -63,8 +66,11 @@ passport.use(
           };
           return done(null, false, info);
         }
-
-        const user = await readByEmail(email);
+   console.log("🚀 ~ email:", {email: email})
+        const user = await userServices.getByEmail(email);
+     
+        console.log("🚀 ~ user:", user)
+        
         if (!user) {
           const info = {
             message: "INVALID CREDENTIALS",
@@ -82,7 +88,7 @@ passport.use(
           return done(null, false, info);
         }
 
-        await update(user._id, { isOnline: true });
+        await userServices.update(user._id, { isOnline: true });
         const data = {
           user_id: user._id,
           role: user.role,
@@ -90,6 +96,8 @@ passport.use(
         };
         const token = createTokenUtil(data);
         req.token = token;
+        console.log("🚀 ~ req:", req.token)
+        
         return done(null, user);
       } catch (error) {
         console.error("Error durante el proceso de autenticación:", error);
@@ -104,7 +112,7 @@ passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromExtractors([(req) => req?.cookies?.token]),
-      secretOrKey: envUtil.SECRET_KEY,
+      secretOrKey: envsUtils.SECRET_KEY,
     },
     async (data, done) => {
       try {
@@ -116,7 +124,7 @@ passport.use(
           };
           return done(null, false, info);
         }
-        const user = await userController.getById(user_id);
+        const user = await userServices.getById(user_id);
         return done(null, user);
       } catch (error) {
         return done(error);
@@ -137,9 +145,9 @@ passport.use(
     async (req, accessToken, refreshToken, profile, done) => {
       try {
         const { id, picture } = profile;
-        let user = await readByEmail(id);
+        let user = await userServices.getByEmail(id);
         if (!user) {
-          user = await userController.create({
+          user = await userServices.create({
             email: id,
             photo: picture,
             password: createHashUtil(id),
@@ -159,7 +167,7 @@ passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromExtractors([(req) => req?.cookies?.token]),
-      secretOrKey: envUtil.SECRET_KEY,
+      secretOrKey: envsUtils.SECRET_KEY,
     },
     async (data, done) => {
       try {
@@ -183,12 +191,13 @@ passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromExtractors([(req) => req?.cookies?.token]),
-      secretOrKey: envUtil.SECRET_KEY,
+      secretOrKey: envsUtils.SECRET_KEY,
     },
     async (data, done) => {
       try {
+        console.log("🚀 ~ data:", data)
         const { user_id } = data;
-        const user = await userController.getById(user_id);
+        const user = await userServices.getById(user_id);
         console.log("Usuario encontrado:", user);
 
         if (!user) {
@@ -232,7 +241,7 @@ passport.use(
       try {
         const token = req.token;
         const { user_id } = verifyTokenUtil(token);
-        const user = await userController.getById(user_id);
+        const user = await userServices.getById(user_id);
         const { isOnline } = user;
         if (!isOnline) {
           const info = {

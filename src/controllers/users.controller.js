@@ -16,7 +16,8 @@ class UserController {
   }
 
   async getByEmail(req, res) {
-    const { email } = req.params;
+    console.log("body",req);
+    const { email } = req.body;
     const message = "user found";
 
     const response = await userServices.getByEmail(email);

@@ -7,7 +7,8 @@ import cors from 'cors'
 
 import indexRouter from "./routers/api/index.router.js";
 import MongoSingleton from "./utils/mongoDB.utils.js";
-import { initializePassport } from "./config/passport.config.js";
+
+// import { initializePassport } from "./config/passport.config.js";
 
 import pathHandler from "./middlewares/pathHandler.middleware.js";
 import errorHandler from "./middlewares/errorHandler.middleware.js";
@@ -41,7 +42,7 @@ app.use(cors({ origin: true, credentials: true }));
 
 MongoSingleton.getInstance()
 
-initializePassport()
+// initializePassport()
 
 //middleware it can be deleted
 app.use((req, res, next) => {

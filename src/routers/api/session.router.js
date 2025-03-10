@@ -1,9 +1,10 @@
-import CustomRouter from "../../utils/CustomRouter.util";
+import CustomRouter from "../../utils/CustomRouter.util.js";
 import { verifyTokenUtil } from "../../utils/token.util.js";
 import passportCb from "../../middlewares/passportCb.middleware.js";
+import { userController } from "../../controllers/users.controller.js";
 
-const { UsersManager } = dao;
-const {readById} = UsersManager;
+// const { UsersManager } = dao;
+// const {readById} = UsersManager;
 
 class SessionRouter extends CustomRouter {
   constructor() {
@@ -83,7 +84,7 @@ function signout(req, res, next) {
 async function online(req, res, next) {
   const { token } = req.headers;
   const data = verifyTokenUtil(token);
-  const one = await readById(data.user_id);
+  const one = await userController.getById(data.user_id);
   if (one) {
     return res.status(200).json({
       message: one.email.toUpperCase() + " IS ONLINE",
@@ -120,7 +121,7 @@ async function onlineToken2(req, res, next) {
   }
 
   const data = verifyTokenUtil(token);
-  const user = await readById(data.user_id);
+  const user = await userController.getById(data.user_id);
   if (!user) {
     return res.status(404).json({
       message: "User not found",

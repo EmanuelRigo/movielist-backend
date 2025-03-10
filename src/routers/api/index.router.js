@@ -21,6 +21,5 @@ let indexRouter = new IndexRouter()
 export default indexRouter.getRouter()
 
 
-
 ///////////////////////
 

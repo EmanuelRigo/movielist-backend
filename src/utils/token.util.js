@@ -1,4 +1,4 @@
-import envUtil from "./env.util.js";
+import envUtil from "./envs.utils.js";
 import jwt from "jsonwebtoken";
 const { SECRET_KEY } = envUtil;
 

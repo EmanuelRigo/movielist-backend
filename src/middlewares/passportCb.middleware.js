@@ -3,6 +3,7 @@ import passport from "./passport.middleware.js";
 export default (strategy) => {
   return async (req, res, next) => {
     passport.authenticate(strategy, (err, user, info) => {
+
       if (err) {
         return next(err);
       }

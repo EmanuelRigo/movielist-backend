@@ -13,7 +13,8 @@ class UserDao {
     }
 
     async getByEmail(email) {
-        const user = await userModel.findOne({email});
+        console.log("🚀 ~ UserDao ~ getByEmail ~ email:", email)
+        const user = await userModel.findOne({email: email});
         return user;}
 
     async create(data) {

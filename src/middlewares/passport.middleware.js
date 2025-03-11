@@ -97,6 +97,7 @@ passport.use(
         const token = createTokenUtil(data);
         req.token = token;
         console.log("🚀 ~ req:", req.token)
+        console.log("tokeeeee")
         
         return done(null, user);
       } catch (error) {
@@ -171,8 +172,10 @@ passport.use(
     },
     async (data, done) => {
       try {
+        console.log("loogout")
         const { user_id } = data;
-        await update(user_id, { isOnline: false });
+        console.log("🚀 ~ data:", data)
+        await userServices.update(user_id, { isOnline: false });
         return done(null, { user_id: null });
       } catch (error) {
         const info = {

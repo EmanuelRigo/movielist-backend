@@ -79,6 +79,10 @@ const movieSchema = new Schema({
         vhs: Boolean,
         dvd: Boolean,
         bluray: Boolean
+    },
+    checked: {
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 

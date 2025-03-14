@@ -7,9 +7,15 @@ function createTokenUtil(data) {
   return token;
 }
 
+function finishTokenUtil(data) {
+  const token = jwt.sign(data, SECRET_KEY, { expiresIn: 1 });
+  return token;
+}
+
+
 function verifyTokenUtil(token) {
   const verify = jwt.verify(token, SECRET_KEY);
   return verify;
 }
 
-export { createTokenUtil, verifyTokenUtil };
+export { createTokenUtil, verifyTokenUtil, finishTokenUtil };

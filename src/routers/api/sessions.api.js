@@ -68,9 +68,12 @@ async function register(req, res, next) {
 
 async function login(req, res, next) {
   const token = req.token;
+  console.log("holaaaaaaaaaaaaaaaaaaaaaaa")
+  console.log("🚀 ~ login ~ token:", token)
   const opts = { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true };
   const message = "USER LOGGED IN";
   const response = "ok";
+  
   return res.cookie("token", token, opts).json200(response, message);
 }
 
@@ -98,7 +101,7 @@ async function online(req, res, next) {
 }
 
 async function onlineToken(req, res, next) {
-  const message = req.user.email.toUpperCase() + "IS ONLINE";
+  const message = req.user.email.toUpperCase() + " IS ONLINE";
   const response = true;
   return res.json200(response, message);
 }

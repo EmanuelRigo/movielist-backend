@@ -98,7 +98,7 @@ async function online(req, res, next) {
 }
 
 async function onlineToken(req, res, next) {
-  const message = req.user.email.toUpperCase() + "IS ONLINE";
+  const message = req.user.email.toUpperCase() + " IS ONLINE";
   const response = true;
   return res.json200(response, message);
 }

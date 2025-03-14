@@ -66,11 +66,8 @@ passport.use(
           };
           return done(null, false, info);
         }
-   console.log("🚀 ~ email:", {email: email})
         const user = await userServices.getByEmail(email);
-     
-        console.log("🚀 ~ user:", user)
-        
+          
         if (!user) {
           const info = {
             message: "INVALID CREDENTIALS",
@@ -97,7 +94,6 @@ passport.use(
         const token = createTokenUtil(data);
         req.token = token;
         console.log("🚀 ~ req:", req.token)
-        console.log("tokeeeee")
         
         return done(null, user);
       } catch (error) {
@@ -112,11 +108,13 @@ passport.use(
   "admin",
   new JwtStrategy(
     {
-      jwtFromRequest: ExtractJwt.fromExtractors([(req) => req?.cookies?.token]),
+      // jwtFromRequest: ExtractJwt.fromExtractors([(req) => req?.cookies?.token]),
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: envsUtils.SECRET_KEY,
     },
     async (data, done) => {
       try {
+        console.log("🚀 ~ data:", data)
         const { user_id, role } = data;
         if (role !== "ADMIN") {
           const info = {
@@ -171,8 +169,7 @@ passport.use(
       secretOrKey: envsUtils.SECRET_KEY,
     },
     async (data, done) => {
-      try {
-        console.log("loogout")
+      try {     
         const { user_id } = data;
         console.log("🚀 ~ data:", data)
         await userServices.update(user_id, { isOnline: false });

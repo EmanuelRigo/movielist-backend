@@ -1,6 +1,4 @@
-import { response } from "express";
-import mongoose from "mongoose";
-import moviesServices from "../services/movies.services.js";
+import userMoviesServices from "../services/userMovies.services.js";
 
 class MovieController {
   async getAll(req, res) {
@@ -29,7 +27,6 @@ class MovieController {
 
   async update(req, res) {
     const { mid } = req.params;
-    console.log(req.body)
     const { formats, checked } = req.body;
 
     if (!formats) {
@@ -42,31 +39,58 @@ class MovieController {
     }
 
     const message = "PRODUCT UPDATED";
-    const response = await moviesServices.update(mid, { formats, checked});
+    const response = await moviesServices.update(mid, { formats, checked });
 
     if (response) {
-      console.log(response);
       return res.json201(response, message);
     } else {
-      console.log("response", response);
       return res.json404();
     }
   }
 
   async deleteOne(req, res) {
-      const { mid } = req.params;
-  
-      if (!mongoose.Types.ObjectId.isValid(mid)) {
-        return res.json404();
+    const { mid } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(mid)) {
+      return res.json404();
+    }
+
+    const message = "movie deleted";
+    const response = await moviesServices.deleteOne(mid);
+    if (response) {
+      return res.json201(response, message);
+    } else {
+      return res.json404();
+    }
+  }
+
+  async addUserMovie(req, res) {
+    const { user_id, movie_id, formats, checked } = req.body;
+
+    try {
+      // Verificar si ya existe una entrada en userMovies para este usuario
+      let userMovies = await userMoviesServices.getByUserId(user_id);
+
+      if (!userMovies) {
+        // Si no existe, crear una nueva entrada
+        userMovies = await userMoviesServices.create({
+          user_id,
+          movies: [],
+        });
       }
-  
-      const message = "movie deleted";
-      const response = await moviesServices.deleteOne(mid);
-      if (response) {
-        return res.json201(response, message);
-      } else {
-        return res.json404();
-      }
+
+      // Agregar la película a la lista del usuario
+      const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
+        _id: movie_id,
+        checked,
+        formats,
+      });
+
+      return res.json201(updatedUserMovies, "Movie added to userMovies");
+    } catch (error) {
+      console.error("Error adding movie to userMovies:", error);
+      return res.json500("Internal Server Error");
+    }
   }
 }
 

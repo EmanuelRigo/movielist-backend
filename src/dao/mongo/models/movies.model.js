@@ -75,15 +75,6 @@ const movieSchema = new Schema({
     video: Boolean,
     vote_average: Number,
     vote_count: Number,
-    formats: {
-        vhs: Boolean,
-        dvd: Boolean,
-        bluray: Boolean
-    },
-    checked: {
-        type: Boolean,
-        default: false
-    }
 }, { timestamps: true });
 
 const movieModel = model(nameCollection, movieSchema);

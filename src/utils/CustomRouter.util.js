@@ -5,7 +5,6 @@ import envsUtils from "./envs.utils.js";
 // const{ UsersManager} = dao;
 import { userDao } from "../dao/mongo/user.dao.js";
 
-
 class CustomRouter {
   constructor() {
     this._router = Router();
@@ -25,10 +24,12 @@ class CustomRouter {
       res.status(200).json({ response, message });
     res.json201 = (response, message) =>
       res.status(201).json({ response, message });
+    res.json302 = () => res.status(302).json({ message: "Movie exists"})
     res.json400 = (message) => res.status(400).json({ error: message });
     res.json401 = () => res.status(401).json({ error: "Bad Auth!" });
     res.json403 = () => res.status(403).json({ error: "Forbidden!" });
     res.json404 = () => res.status(404).json({ error: "Not found!" });
+    res.json500 = (message) => res.status(500).json({ error: message });
     return next();
   };
 
@@ -44,7 +45,7 @@ class CustomRouter {
         (policies.includes("USER") && role === "USER") ||
         (policies.includes("ADMIN") && role === "ADMIN")
       ) {
-        const user = await userDao.getById(user_id)
+        const user = await userDao.getById(user_id);
         if (!user) return res.json401();
         req.user = user;
         return next();

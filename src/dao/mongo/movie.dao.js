@@ -12,6 +12,11 @@ class MovieDao {
         return movie;
     }
 
+    async getByIdAPI(id) {
+        const movie = await movieModel.findOne({id});
+        return movie;
+    }
+
     async create(data) {
         const movie = await movieModel.create(data)
         return movie;

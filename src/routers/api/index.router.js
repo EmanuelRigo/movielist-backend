@@ -2,6 +2,7 @@ import moviesRouter from "./movies.router.js";
 import sessionRouter from "./session.router.js";
 import CustomRouter from "../../utils/CustomRouter.util.js";
 import cookiesRouter from "./cookie.router.js";
+import userMoviesRouter from "./userMovies.router.js";
 
 class IndexRouter extends CustomRouter {
 
@@ -13,6 +14,7 @@ class IndexRouter extends CustomRouter {
         this.use("/movies", ["PUBLIC"], moviesRouter)
         this.use("/sessions", ["PUBLIC"], sessionRouter)
         this.use("/cookies", ["PUBLIC"], cookiesRouter)
+        this.use("/userMovies", ["PUBLIC"], userMoviesRouter)
     }
 
 }

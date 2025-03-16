@@ -1,12 +1,29 @@
 import mongoose from "mongoose";
 import userServices from "../services/users.services.js";
+import userMoviesServices from "../services/userMovies.services.js";
 
 class UserController {
   async create(req, res) {
     const message = "USER CREATED";
     const data = req.body;
-    const response = await userServices.create(data);
-    return res.json201(response, message);
+
+    try {
+      // Crear el usuario
+      const user = await userServices.create(data);
+      console.log("user", user);
+      // Crear automáticamente una entrada en userMovies para el usuario recién creado
+      const usermoviess = await userMoviesServices.create({
+        user_id: user._id,
+        movies: [],
+      });
+      console.log("🚀 ~ UserController ~ create ~ usermoviess:", usermoviess)
+
+
+      return res.json201(user, message);
+    } catch (error) {
+      console.error("Error creating user and userMovies:", error);
+      return res.json500("Internal Server Error");
+    }
   }
 
   async getAll(req, res) {
@@ -16,7 +33,7 @@ class UserController {
   }
 
   async getByEmail(req, res) {
-    console.log("body",req);
+    console.log("body", req);
     const { email } = req.body;
     const message = "user found";
 

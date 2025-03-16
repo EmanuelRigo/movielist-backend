@@ -1,5 +1,6 @@
 class MovieDTO {
   constructor(data) {
+    this._id = data._id || null;
     this.id = data.id;
     this.title = data.title;
     this.director = data.director;

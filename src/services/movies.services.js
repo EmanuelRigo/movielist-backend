@@ -1,4 +1,5 @@
 import movieDao from "../dao/mongo/movie.dao.js";
+import MovieDTO from "../dto/movie.dto.js";
 
 class MoviesServices {
     async getAll(filter, options) {
@@ -9,7 +10,11 @@ class MoviesServices {
         return await movieDao.getById(id);
     }
 
+    async getByIdAPI(id) {
+        return await movieDao.getByIdAPI(id)}
+
     async create(data) {
+        data = new MovieDTO(data);
         return await movieDao.create(data);
     }
 

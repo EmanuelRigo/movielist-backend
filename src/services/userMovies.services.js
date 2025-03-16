@@ -24,6 +24,12 @@ class UserMoviesServices {
     async update(id, data) {
         return await userMoviesDao.update(id, data);
     }
+
+    async addMovie(user_id, movie) {
+        console.log("🚀 ~ UserMoviesServices ~ addMovie ~ user_id:", user_id)
+        
+        return await userMoviesDao.addMovie(user_id, movie);
+      }
 }
 
 const userMoviesServices = new UserMoviesServices()

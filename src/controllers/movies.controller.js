@@ -1,4 +1,4 @@
-import userMoviesServices from "../services/userMovies.services.js";
+import moviesServices from "../services/movies.services.js";
 
 class MovieController {
   async getAll(req, res) {
@@ -21,9 +21,61 @@ class MovieController {
   async create(req, res) {
     const message = "movie created";
     const data = req.body;
+    console.log("🚀 ~ MovieController ~ create ~ data:", data)
+    
     const response = await moviesServices.create(data);
     return res.json201(response, message);
   }
+
+  // async create(req, res) {
+  //   const { id, formats, checked } = req.body; // Asegúrate de que `id` sea el identificador único de la película
+  //   const message = "movie created";
+  //   console.log("🚀 ~ MovieController ~ create ~ body:", req.body.id)
+  
+  //   try {
+  //     // Verificar si la película ya existe
+  //     console.log("🚀 ~ MovieController ~ create ~ id", id)
+  //     const existingMovie = await moviesServices.getByIdAPI(id);
+
+  //     const token = req.cookies.token;
+  //     console.log("🚀 ~ MovieController ~ create ~ token:", token)
+  //     if (!token) {
+  //       return res.json401("No token provided");
+  //     }
+  
+  //     // Decodificar el token para obtener el user_id
+  //     const decoded = jwt.verify(token, envsUtils.SECRET_KEY);
+  //     const user_id = decoded.user_id;
+  //     console.log("🚀 ~ MovieController ~ create ~ user_id:", user_id)
+  
+  //     if (existingMovie) {
+  //       console.log("🚀 ~ hola")
+  //       // Si la película ya existe, agregarla al array `movies` del usuario
+  //       const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
+  //         _id: existingMovie._id, // Usar el `_id` generado por MongoDB
+  //         checked,
+  //         formats,
+  //       });
+  
+  //       return res.json200(updatedUserMovies, "Movie already exists, added to userMovies");
+  //     }
+  
+  //     // Si la película no existe, crearla
+  //     const newMovie = await moviesServices.create(req.body);
+  
+  //     // Agregar la nueva película al array `movies` del usuario
+  //     const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
+  //       _id: newMovie._id, // Usar el `_id` generado por MongoDB
+  //       checked,
+  //       formats,
+  //     });
+  
+  //     return res.json201(updatedUserMovies, "Movie created and added to userMovies");
+  //   } catch (error) {
+  //     console.error("Error creating or adding movie:", error);
+  //     return res.json500("Internal Server Error");
+  //   }
+  // }
 
   async update(req, res) {
     const { mid } = req.params;
@@ -64,34 +116,7 @@ class MovieController {
     }
   }
 
-  async addUserMovie(req, res) {
-    const { user_id, movie_id, formats, checked } = req.body;
 
-    try {
-      // Verificar si ya existe una entrada en userMovies para este usuario
-      let userMovies = await userMoviesServices.getByUserId(user_id);
-
-      if (!userMovies) {
-        // Si no existe, crear una nueva entrada
-        userMovies = await userMoviesServices.create({
-          user_id,
-          movies: [],
-        });
-      }
-
-      // Agregar la película a la lista del usuario
-      const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
-        _id: movie_id,
-        checked,
-        formats,
-      });
-
-      return res.json201(updatedUserMovies, "Movie added to userMovies");
-    } catch (error) {
-      console.error("Error adding movie to userMovies:", error);
-      return res.json500("Internal Server Error");
-    }
-  }
 }
 
 export const movieController = new MovieController();

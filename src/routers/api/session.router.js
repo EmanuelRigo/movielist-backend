@@ -3,6 +3,8 @@ import { verifyTokenUtil } from "../../utils/token.util.js";
 import passportCb from "../../middlewares/passportCb.middleware.js";
 import { userController } from "../../controllers/users.controller.js";
 
+import userMoviesServices from "../../services/userMovies.services.js";
+
 // const { UsersManager } = dao;
 // const {readById} = UsersManager;
 
@@ -61,9 +63,21 @@ class SessionRouter extends CustomRouter {
 }
 
 async function register(req, res, next) {
-  const { _id } = req.user;
-  const message = "User Registered";
-  return res.json201(_id, message);
+  try {
+    const { _id } = req.user; // ID del usuario recién registrado
+    const message = "User Registered";
+
+    // Crear automáticamente una entrada en userMovies para el usuario
+    await userMoviesServices.create({
+      user_id: _id,
+      movies: [],
+    });
+
+    return res.json201(_id, message);
+  } catch (error) {
+    console.error("Error during registration:", error);
+    return res.json500("Internal Server Error");
+  }
 }
 
 async function login(req, res, next) {

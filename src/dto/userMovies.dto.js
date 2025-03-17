@@ -3,7 +3,7 @@ class UserMoviesDTO {
     this.user_id = data.user_id;
     this.movies = data.movies.map((movie) => ({
       _id: movie._id,
-      checked: movie.checked,
+      checked:  false,
       formats: {
         vhs: movie.formats?.vhs || false,
         dvd: movie.formats?.dvd || false,

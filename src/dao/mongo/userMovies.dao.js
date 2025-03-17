@@ -6,10 +6,13 @@ class UserMoviesDao {
     return movies;
   }
 
-  async getById(id) {
-    const movie = await userMoviesModel.findById(id);
-    return movie;
-  }
+async getById(id) {
+  const userMovies = await userMoviesModel
+    .findById(id)
+    .populate("movies._id"); // Realizar el populate para obtener los detalles de las películas
+
+  return userMovies;
+}
 
   async getByEmail(email) {
     console.log("🚀 ~ UserDao ~ getByEmail ~ email:", email);
@@ -33,33 +36,19 @@ class UserMoviesDao {
   }
 
   // Nuevo método: addMovie
-  async addMovie(user_id, movie) {
-  console.log("🚀 ~ UserMoviesDao ~ addMovie ~ movie:", movie)
-  console.log("🚀 ~ UserMoviesDao ~ addMovie ~ user_id:", user_id)
+async addMovie(user_id, movie) {
+  console.log("🚀 ~ UserMoviesDao ~ addMovie ~ movie:", movie);
+  console.log("🚀 ~ UserMoviesDao ~ addMovie ~ user_id:", user_id);
 
-    
-    const user = await userMoviesModel.findOne({ user_id });
-    console.log("🚀 ~ UserMoviesDao ~ addMovie ~ user", user)
-    // Verificar si la película ya existe en el array `movies`
-    const userMovies = await userMoviesModel.findOne({
-      user_id,
-      "movies.id": movie.id,
-    });
+  // Agregar la película al array `movies` sin realizar verificaciones
+  const updatedUserMovies = await userMoviesModel.findOneAndUpdate(
+    { user_id: user_id },
+    { $push: { movies: movie } },
+    { new: true} // `upsert: true` asegura que se cree el documento si no existe
+  );
 
-    if (userMovies) {
-      // Si la película ya existe, no hacer nada o actualizar los datos existentes
-      return userMovies;
-    }
-
-    // Si la película no está en el array, agregarla
-    const updatedUserMovies = await userMoviesModel.findOneAndUpdate(
-      { user_id },
-      { $push: { movies: movie } },
-      { new: true, upsert: true } // `upsert: true` asegura que se cree el documento si no existe
-    );
-
-    return updatedUserMovies;
-  }
+  return updatedUserMovies;
+}
 
 
 }

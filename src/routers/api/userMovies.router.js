@@ -7,8 +7,9 @@ class UserMoviesRouter extends CustomRouter {
     this.init()
   }
   init =()=> {
-    this.read("/", ["ADMIN"], userMoviesController.getAll)
+    this.read("/",["PUBLIC"], userMoviesController.getAll)
     this.read("/:id", ["PUBLIC"], userMoviesController.getById)
+    this.update("/", ["PUBLIC"], userMoviesController.addMovie)
   }
 }
 

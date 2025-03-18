@@ -87,6 +87,7 @@ passport.use(
 
         await userServices.update(user._id, { isOnline: true });
         const data = {
+          username: user.username,
           user_id: user._id,
           role: user.role,
           isOnline: true,

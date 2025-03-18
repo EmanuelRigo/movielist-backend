@@ -36,8 +36,13 @@ class UserMoviesServices {
   async getByUserId(user_id) {
     // Método adicional para obtener el documento `userMovies` por `user_id`
     return await userMoviesDao.getByUserId(user_id);
-  }
+  } async getByUserIdAndMovieId(user_id, movie_id) {
+  // Método adicional para obtener el documento `userMovies` por `user_id` y `movie_id`
+  return await userMoviesDao.getByUserIdAndMovieId(user_id, movie_id);
 }
+}
+
+
 
 const userMoviesServices = new UserMoviesServices();
 export default userMoviesServices;

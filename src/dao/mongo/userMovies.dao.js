@@ -20,6 +20,14 @@ async getById(id) {
     return user;
   }
 
+  async getByUserId(user_id) {
+    const userMovies = await userMoviesModel
+    .findOne({ user_id: user_id })
+    .populate("movies._id"); 
+    return userMovies
+  }// Realizar el populate para obtener los detalles de las películas}
+
+
   async create(data) {
     const movie = await userMoviesModel.create(data);
     return movie;

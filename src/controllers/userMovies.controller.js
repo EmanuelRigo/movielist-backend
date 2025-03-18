@@ -39,14 +39,9 @@ class UserMoviesController {
       // Verificar si la película ya existe
       const existingMovie = await moviesServices.getByIdAPI(id);
 
-      if (existingMovie) {
-       console.log("🚀🚀🚀 ~ UserMoviesController ~ addMovie ~ existingMovie:", existingMovie._id)
-       
-       const existingUserMovie = await userMoviesServices.getByUserId(user_id);
-       console.log("🚀 🚀 🚀~ UserMoviesController ~ addMovie ~ existingUserMovie:", existingUserMovie.movies[0]._id)
-       
+      if (existingMovie) {       
+       const existingUserMovie = await userMoviesServices.getByUserId(user_id);     
         if (existingUserMovie.movies.find((movie) => movie._id._id.toString() === existingMovie._id.toString())) {
-          console.log("🚀🚀🚀🚀🚀🚀 ~ UserMoviesController ~ addMovie ~ existingUserMovie:")
           return res.json200(existingUserMovie, "Movie already exists in userMovies")
         }
         const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
@@ -61,15 +56,21 @@ class UserMoviesController {
         );
       }
 
-      ////// Si la película no existe, crearla
-      const newMovie = await moviesServices.create(data);
+  // Crear la nueva película
+  const newMovie = await moviesServices.create(data);
+      console.log("🚀🚀🚀🚀🚀🚀 ~ UserMoviesController ~ addMovie ~ newMovie:", newMovie._id, "title", newMovie.title)
       
-      // Agregar la nueva película al array `movies` del usuario
-      const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
-        _id: newMovie._id, // Usar el `_id` generado por MongoDB
-        checked,
-        formats,
-      });
+  // Asegurarte de que `newMovie` se haya creado antes de continuar
+  if (!newMovie || !newMovie._id) {
+    throw new Error("Failed to create new movie");
+  }
+
+  // Agregar la nueva película al array `movies` del usuario
+  const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
+    _id: newMovie._id, // Usar el `_id` generado por MongoDB
+    checked,
+    formats,
+  });
 
       return res.json201(
         updatedUserMovies,

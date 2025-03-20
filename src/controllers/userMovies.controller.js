@@ -58,6 +58,7 @@ class UserMoviesController {
 
   // Crear la nueva película
   const newMovie = await moviesServices.create(data);
+  return newMovie
       console.log("🚀🚀🚀🚀🚀🚀 ~ UserMoviesController ~ addMovie ~ newMovie:", newMovie._id, "title", newMovie.title)
       
   // Asegurarte de que `newMovie` se haya creado antes de continuar
@@ -126,6 +127,35 @@ class UserMoviesController {
       return res.json500("Internal Server Error");
     }
   }
+
+  async updateMovie(req, res) {
+    console.log("🚀 ~ UserMoviesController ~ updateMovie ~ req.body:", req.body)
+    const token = req.cookies.token;
+    console.log("🚀 ~ UserMoviesController ~ updateMovie ~ token:", token)
+    try {
+      const token = req.cookies.token;
+      const decoded = jwt.verify(token, envsUtils.SECRET_KEY);
+      const user_id = decoded.user_id;
+      if (!user_id) {
+        return res.json401("Invalid token");
+      }
+      console.log("🚀 ~ UserMoviesController ~ updateMovie ~ user_id:", user_id)
+
+      const mid = req.params.mid;
+      console.log("🚀 ~ UserMoviesController ~ updateMovie ~ mid:", mid)
+      const data = req.body;
+
+      const userMovies = await userMoviesServices.updateMovie(user_id, mid, data);
+      return res.json200(userMovies, "User movie updated");
+    } catch (error) {
+      console.error("Error in updateMovie:", error);
+      return res.json500("Internal Server Error");
+    }
+  }
+
+
+
+
 }
 
 export const userMoviesController = new UserMoviesController();

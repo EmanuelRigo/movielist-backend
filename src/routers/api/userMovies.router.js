@@ -12,7 +12,8 @@ class UserMoviesRouter extends CustomRouter {
     this.read("/", ["PUBLIC"], userMoviesController.getByToken)
     this.read("/:mid", ["PUBLIC"], userMoviesController.getByTokenAndMovie)
     this.update("/", ["PUBLIC"], userMoviesController.addMovie)
-    
+    this.update("/:mid", ["PUBLIC"], userMoviesController.updateMovie)
+    this.update("/:mid", ["PUBLIC"], userMoviesController.removeMovie)
     
   }
 }

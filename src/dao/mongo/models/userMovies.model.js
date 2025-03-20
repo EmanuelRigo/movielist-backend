@@ -18,7 +18,7 @@ const userMoviesSchema = new Schema(
         },
         checked: {
           type: Boolean,
-          required: true,
+          default: false,
         },
         formats: {
           vhs: Boolean,

@@ -40,6 +40,38 @@ class UserMoviesServices {
   // Método adicional para obtener el documento `userMovies` por `user_id` y `movie_id`
   return await userMoviesDao.getByUserIdAndMovieId(user_id, movie_id);
 }
+
+
+async updateMovie(user_id, movie_id, data) {
+  try {
+    const userMovies = await userMoviesDao.getByUserId(user_id );
+    console.log("🚀 ~ UserMoviesServices ~ updateMovie ~ userMovies:", userMovies)
+    if (!userMovies) {
+      throw new Error("User movies not found");
+    }
+    const movie = userMovies.movies.find((m) => m._id._id.toString() === movie_id);
+    // console.log("🚀 ~ UserMoviesServices ~ updateMovie ~ userMovies.movies:", userMovies.movies)
+    
+    console.log("🚀 ~ UserMoviesServices ~ updateMovie ~ movie_id:", movie_id)
+    console.log("🚀🚀🚀 ~ UserMoviesServices ~ updateMovie ~ movie:", movie)
+
+    if (!movie) {
+      throw new Error("Movie not found in user's movies");
+    }
+
+    // Actualizar los campos de la película
+    Object.assign(movie, data);
+
+    // Guardar los cambios
+    await userMovies.save();
+
+    return userMovies;
+  } catch (error) {
+    console.error("Error in updateMovie service:", error);
+    throw error;
+  }
+}
+
 }
 
 

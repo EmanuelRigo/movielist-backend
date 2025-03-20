@@ -79,13 +79,25 @@ async function register(req, res, next) {
     return res.json500("Internal Server Error");
   }
 }
-
 async function login(req, res, next) {
-  const token = req.token;
-  const opts = { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true };
-  const message = "USER LOGGED IN";
-  const response = "ok";
-  return res.cookie("token", token, opts).json200(response, message);
+  try {
+    console.log("req ✅✅✅", req.user);
+    const token = req.token; // Token generado en la estrategia de Passport
+    const name = req.user.username; // Nombre del usuario autenticado
+    const optsToken = { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true }; // Configuración de la cookie del token
+    const optsName = { maxAge: 60 * 60 * 24 * 7 * 1000 }; // Configuración de la cookie del nombre (no httpOnly para que sea accesible en el frontend)
+    const message = "USER LOGGED IN";
+    const response = "ok";
+
+    // Crear dos cookies: una para el token y otra para el nombre del usuario
+    return res
+      .cookie("token", token, optsToken) // Cookie para el token
+      .cookie("name", name, optsName) // Cookie para el nombre del usuario
+      .json200(response, message);
+  } catch (error) {
+    console.error("Error during login:", error);
+    return res.json500("Internal Server Error");
+  }
 }
 
 function signout(req, res, next) {

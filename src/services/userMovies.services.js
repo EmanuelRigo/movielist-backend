@@ -21,6 +21,26 @@ class UserMoviesServices {
     return await userMoviesDao.deleteOne(id);
   }
 
+  async removeMovie(uid, mid) {
+    try {
+      const userMovies = await userMoviesDao.getByUserId(uid);
+      if (!userMovies) {
+        throw new Error("User movies not found");
+      }
+      const movieIndex = userMovies.movies.findIndex(
+        (movie) => movie._id._id.toString() === mid
+      );
+      if (movieIndex === -1) {
+        throw new Error("Movie not found in user's movies");
+      }
+      userMovies.movies.splice(movieIndex, 1);
+      await userMovies.save();
+      return userMovies;
+    } catch (error) {
+      console.error("Error in removeMovie service:", error);    
+      throw error;
+    }}
+
   async update(id, data) {
     return await userMoviesDao.update(id, data);
   }
@@ -32,45 +52,51 @@ class UserMoviesServices {
   async getByUserId(user_id) {
     // Método adicional para obtener el documento `userMovies` por `user_id`
     return await userMoviesDao.getByUserId(user_id);
-  } async getByUserIdAndMovieId(user_id, movie_id) {
-  // Método adicional para obtener el documento `userMovies` por `user_id` y `movie_id`
-  return await userMoviesDao.getByUserIdAndMovieId(user_id, movie_id);
-}
+  }
 
+  async getByUserIdAndMovieId(user_id, movie_id) {
+    // Método adicional para obtener el documento `userMovies` por `user_id` y `movie_id`
+    return await userMoviesDao.getByUserIdAndMovieId(user_id, movie_id);
+  }
 
-async updateMovie(user_id, movie_id, data) {
-  try {
-    const userMovies = await userMoviesDao.getByUserId(user_id );
-    console.log("🚀 ~ UserMoviesServices ~ updateMovie ~ userMovies:", userMovies)
-    if (!userMovies) {
-      throw new Error("User movies not found");
+  async updateMovie(user_id, movie_id, data) {
+    try {
+      const userMovies = await userMoviesDao.getByUserId(user_id);
+      console.log(
+        "🚀 ~ UserMoviesServices ~ updateMovie ~ userMovies:",
+        userMovies
+      );
+      if (!userMovies) {
+        throw new Error("User movies not found");
+      }
+      const movie = userMovies.movies.find(
+        (m) => m._id._id.toString() === movie_id
+      );
+      // console.log("🚀 ~ UserMoviesServices ~ updateMovie ~ userMovies.movies:", userMovies.movies)
+
+      console.log(
+        "🚀 ~ UserMoviesServices ~ updateMovie ~ movie_id:",
+        movie_id
+      );
+      console.log("🚀🚀🚀 ~ UserMoviesServices ~ updateMovie ~ movie:", movie);
+
+      if (!movie) {
+        throw new Error("Movie not found in user's movies");
+      }
+
+      // Actualizar los campos de la película
+      Object.assign(movie, data);
+
+      // Guardar los cambios
+      await userMovies.save();
+
+      return userMovies;
+    } catch (error) {
+      console.error("Error in updateMovie service:", error);
+      throw error;
     }
-    const movie = userMovies.movies.find((m) => m._id._id.toString() === movie_id);
-    // console.log("🚀 ~ UserMoviesServices ~ updateMovie ~ userMovies.movies:", userMovies.movies)
-    
-    console.log("🚀 ~ UserMoviesServices ~ updateMovie ~ movie_id:", movie_id)
-    console.log("🚀🚀🚀 ~ UserMoviesServices ~ updateMovie ~ movie:", movie)
-
-    if (!movie) {
-      throw new Error("Movie not found in user's movies");
-    }
-
-    // Actualizar los campos de la película
-    Object.assign(movie, data);
-
-    // Guardar los cambios
-    await userMovies.save();
-
-    return userMovies;
-  } catch (error) {
-    console.error("Error in updateMovie service:", error);
-    throw error;
   }
 }
-
-}
-
-
 
 const userMoviesServices = new UserMoviesServices();
 export default userMoviesServices;

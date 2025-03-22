@@ -13,7 +13,6 @@ class UserDao {
     }
 
     async getByEmail(email) {
-        console.log("🚀 ~ UserDao ~ getByEmail ~ email:", email)
         const user = await userModel.findOne({email: email});
         return user;}
 

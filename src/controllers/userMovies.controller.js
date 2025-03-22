@@ -23,7 +23,7 @@ class UserMoviesController {
 
   async addMovie(req, res) {
     const data = req.body;
-    const { id, formats, checked, _id } = req.body;
+    const { id, formats} = req.body;
 
     try {
       const token = req.cookies.token;

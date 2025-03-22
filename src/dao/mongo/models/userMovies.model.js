@@ -31,7 +31,6 @@ const userMoviesSchema = new Schema(
   { timestamps: true }
 );
 
-// Crear un índice único para el campo `movies._id`
 userMoviesSchema.index({ user_id: 1, "movies._id": 1 }, { unique: true });
 
 const userMoviesModel = model(nameCollection, userMoviesSchema);

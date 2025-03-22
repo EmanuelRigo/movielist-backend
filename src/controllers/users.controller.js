@@ -8,16 +8,11 @@ class UserController {
     const data = req.body;
 
     try {
-      // Crear el usuario
       const user = await userServices.create(data);
-      console.log("user", user);
-      // Crear automáticamente una entrada en userMovies para el usuario recién creado
-      const usermoviess = await userMoviesServices.create({
+      const usermovies = await userMoviesServices.create({
         user_id: user._id,
         movies: [],
       });
-      console.log("🚀 ~ UserController ~ create ~ usermoviess:", usermoviess)
-
 
       return res.json201(user, message);
     } catch (error) {
@@ -33,7 +28,6 @@ class UserController {
   }
 
   async getByEmail(req, res) {
-    console.log("body", req);
     const { email } = req.body;
     const message = "user found";
 

@@ -10,7 +10,6 @@ async getById(id) {
   const userMovies = await userMoviesModel
     .findById(id)
     .populate("movies._id"); // Realizar el populate para obtener los detalles de las películas
-
   return userMovies;
 }
 
@@ -43,16 +42,11 @@ async getById(id) {
     return movie;
   }
 
-  // Nuevo método: addMovie
 async addMovie(user_id, movie) {
-  console.log("🚀 ~ UserMoviesDao ~ addMovie ~ movie:", movie);
-  console.log("🚀 ~ UserMoviesDao ~ addMovie ~ user_id:", user_id);
-
-  // Agregar la película al array `movies` sin realizar verificaciones
   const updatedUserMovies = await userMoviesModel.findOneAndUpdate(
     { user_id: user_id },
     { $push: { movies: movie } },
-    { new: true} // `upsert: true` asegura que se cree el documento si no existe
+    { new: true}
   );
 
   return updatedUserMovies;

@@ -26,57 +26,69 @@ class UserMoviesController {
     const { id, formats, checked, _id } = req.body;
 
     try {
-      // Verificar si la cookie `token` está presente
       const token = req.cookies.token;
       if (!token) {
         return res.json401("No token provided");
       }
 
-      // Decodificar el token para obtener el `user_id`
       const decoded = jwt.verify(token, envsUtils.SECRET_KEY);
       const user_id = decoded.user_id;
 
-      // Verificar si la película ya existe
-      const existingMovie = await moviesServices.getByIdAPI(id);
-
-      if (existingMovie) {       
-       const existingUserMovie = await userMoviesServices.getByUserId(user_id);     
-        if (existingUserMovie.movies.find((movie) => movie._id._id.toString() === existingMovie._id.toString())) {
-          return res.json200(existingUserMovie, "Movie already exists in userMovies")
+      async function checkExistsInUserMovies(movieToAdd) {
+        const existingUserMovie = await userMoviesServices.getByUserId(user_id);
+        if (
+          existingUserMovie.movies.find(
+            (movie) => movie._id._id.toString() === movieToAdd._id.toString()
+          )
+        ) {
+          return res.json200(
+            existingUserMovie,
+            "Movie already exists in userMovies"
+          );
         }
         const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
-          _id: existingMovie._id, // Usar el `_id` generado por MongoDB
+          _id: movieToAdd._id,
           checked: false,
           formats,
         });
 
-        return res.json200(
-          updatedUserMovies,
-          "Movie already exists, added to userMovies"
-        );
+        return res.json200(updatedUserMovies, "Added to userMovies");
       }
 
-  // Crear la nueva película
-  const newMovie = await moviesServices.create(data);
-  return newMovie
-      console.log("🚀🚀🚀🚀🚀🚀 ~ UserMoviesController ~ addMovie ~ newMovie:", newMovie._id, "title", newMovie.title)
-      
-  // Asegurarte de que `newMovie` se haya creado antes de continuar
-  if (!newMovie || !newMovie._id) {
-    throw new Error("Failed to create new movie");
-  }
+      // Verificar si la película ya existe
+      const existingMovie = await moviesServices.getByIdAPI(id);
+      if (existingMovie) {
+        checkExistsInUserMovies(existingMovie);
+      }
 
-  // Agregar la nueva película al array `movies` del usuario
-  const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
-    _id: newMovie._id, // Usar el `_id` generado por MongoDB
-    checked,
-    formats,
-  });
-
-      return res.json201(
-        updatedUserMovies,
-        "Movie created and added to userMovies"
+      // Crear la nueva película
+      const newMovie = await moviesServices.create(data);
+      console.log(
+        "🚀🚀🚀🚀🚀🚀 ~ UserMoviesController ~ addMovie ~ newMovie:",
+        newMovie._id,
+        "title",
+        newMovie.title
       );
+       checkExistsInUserMovies(newMovie);
+
+
+
+      // // Asegurarte de que `newMovie` se haya creado antes de continuar
+      // if (!newMovie || !newMovie._id) {
+      //   throw new Error("Failed to create new movie");
+      // }
+
+      // // Agregar la nueva película al array `movies` del usuario
+      // const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
+      //   _id: newMovie._id, // Usar el `_id` generado por MongoDB
+      //   checked,
+      //   formats,
+      // });
+
+      // return res.json201(
+      //   updatedUserMovies,
+      //   "Movie created and added to userMovies"
+      // );
     } catch (error) {
       console.error("Error in addMovie:", error);
       return res.json500("Internal Server Error");
@@ -86,16 +98,16 @@ class UserMoviesController {
   async getByToken(req, res) {
     try {
       const token = req.cookies.token;
-      console.log("🚀 ~ UserMoviesController ~ getByToken ~ token:", token)
+      console.log("🚀 ~ UserMoviesController ~ getByToken ~ token:", token);
       if (!token) {
         return res.json401("No token provided");
       }
-      
+
       // Decodificar el token para obtener el `user_id`
       const decoded = jwt.verify(token, envsUtils.SECRET_KEY);
-      console.log("🚀 ~ UserMoviesController ~ getByToken ~ decoded:", decoded)
+      console.log("🚀 ~ UserMoviesController ~ getByToken ~ decoded:", decoded);
       const user_id = decoded.user_id;
-      console.log("🚀 ~ UserMoviesController ~ getByToken ~ user_id:", user_id)
+      console.log("🚀 ~ UserMoviesController ~ getByToken ~ user_id:", user_id);
 
       // Obtener las películas del usuario
       const userMovies = await userMoviesServices.getByUserId(user_id);
@@ -129,9 +141,12 @@ class UserMoviesController {
   }
 
   async updateMovie(req, res) {
-    console.log("🚀 ~ UserMoviesController ~ updateMovie ~ req.body:", req.body)
+    console.log(
+      "🚀 ~ UserMoviesController ~ updateMovie ~ req.body:",
+      req.body
+    );
     const token = req.cookies.token;
-    console.log("🚀 ~ UserMoviesController ~ updateMovie ~ token:", token)
+    console.log("🚀 ~ UserMoviesController ~ updateMovie ~ token:", token);
     try {
       const token = req.cookies.token;
       const decoded = jwt.verify(token, envsUtils.SECRET_KEY);
@@ -139,23 +154,26 @@ class UserMoviesController {
       if (!user_id) {
         return res.json401("Invalid token");
       }
-      console.log("🚀 ~ UserMoviesController ~ updateMovie ~ user_id:", user_id)
+      console.log(
+        "🚀 ~ UserMoviesController ~ updateMovie ~ user_id:",
+        user_id
+      );
 
       const mid = req.params.mid;
-      console.log("🚀 ~ UserMoviesController ~ updateMovie ~ mid:", mid)
+      console.log("🚀 ~ UserMoviesController ~ updateMovie ~ mid:", mid);
       const data = req.body;
 
-      const userMovies = await userMoviesServices.updateMovie(user_id, mid, data);
-      return res.json200(userMovies, "User movie updated");
+      const userMovies = await userMoviesServices.updateMovie(
+        user_id,
+        mid,
+        data
+      );
+      return res.json200(userMovies, "ok");
     } catch (error) {
       console.error("Error in updateMovie:", error);
       return res.json500("Internal Server Error");
     }
   }
-
-
-
-
 }
 
 export const userMoviesController = new UserMoviesController();

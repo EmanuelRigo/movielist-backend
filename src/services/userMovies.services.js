@@ -26,10 +26,6 @@ class UserMoviesServices {
   }
 
   async addMovie(user_id, movie) {
-    console.log("🚀 ~ UserMoviesServices ~ addMovie ~ user_id:", user_id);
-    console.log("🚀 ~ UserMoviesServices ~ addMovie ~ movie:", movie);
-
-    // Delegar la operación al DAO
     return await userMoviesDao.addMovie(user_id, movie);
   }
 

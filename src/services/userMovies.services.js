@@ -1,7 +1,7 @@
 import { userMoviesDao } from "../dao/mongo/userMovies.dao.js";
 
 class UserMoviesServices {
-  async getAll(filter, options) {
+  async getAll() {
     return await userMoviesDao.getAll();
   }
 

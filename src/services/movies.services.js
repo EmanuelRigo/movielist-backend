@@ -2,7 +2,7 @@ import movieDao from "../dao/mongo/movie.dao.js";
 import MovieDTO from "../dto/movie.dto.js";
 
 class MoviesServices {
-    async getAll(filter, options) {
+    async getAll() {
         return await movieDao.getAll();
     }
 

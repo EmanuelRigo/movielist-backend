@@ -15,4 +15,5 @@ class UserRouter extends CustomRouter {
 }
 
 const userRouter = new UserRouter()
-export default userController.getRouter()
+// export default userController.getRouter()
+export default userRouter.getRouter()

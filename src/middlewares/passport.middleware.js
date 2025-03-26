@@ -94,9 +94,7 @@ passport.use(
           isOnline: true,
         };
         const token = createTokenUtil(data);
-        req.token = token;
-        console.log("🚀 ~ req:", req.token)
-        
+        req.token = token;        
         return done(null, user);
       } catch (error) {
         console.error("Error durante el proceso de autenticación:", error);
@@ -116,7 +114,6 @@ passport.use(
     },
     async (data, done) => {
       try {
-        console.log("🚀 ~ data:", data)
         const { user_id, role } = data;
         if (role !== "ADMIN") {
           const info = {
@@ -173,7 +170,6 @@ passport.use(
     async (data, done) => {
       try {     
         const { user_id } = data;
-        console.log("🚀 ~ data:", data)
         await userServices.update(user_id, { isOnline: false });
         return done(null, { user_id: null });
       } catch (error) {
@@ -197,7 +193,7 @@ passport.use(
     },
     async (data, done) => {
       try {
-        console.log("🚀 ~ data:", data)
+
         const { user_id } = data;
         const user = await userServices.getById(user_id);
         console.log("Usuario encontrado:", user);

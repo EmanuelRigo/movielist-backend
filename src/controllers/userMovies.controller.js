@@ -95,16 +95,23 @@ class UserMoviesController {
       if (!token) {
         return res.json401("No token provided");
       }
-
+  
       const decoded = jwt.verify(token, envsUtils.SECRET_KEY);
       const user_id = decoded.user_id;
-
-      const mid = req.params.mid;
-      const userMovies = await userMoviesServices.getByUserIdAndMovieId(
-        user_id,
-        mid
-      );
-      return res.json201(userMovies, "User movies read");
+  
+      const mid = req.params.mid; // ID de la película
+      const userMovies = await userMoviesServices.getByUserId(user_id);
+      console.log("🚀 ~ UserMoviesController ~ getByTokenAndMovie ~ userMovies:", userMovies.movies);
+  
+      // Buscar la película específica en el array `movies`
+      const userMovie = userMovies.movies.find((movie) => movie._id._id.toString() === mid);
+      console.log("🚀 ~ UserMoviesController ~ getByTokenAndMovie ~ userMovie:", userMovie)
+  
+      if (!userMovie) {
+        return res.json404("Movie not found in user's movies");
+      }
+      
+      return res.json201(userMovie, "User movie read");
     } catch (error) {
       console.error("Error in getByTokenAndMovie:", error);
       return res.json500("Internal Server Error");

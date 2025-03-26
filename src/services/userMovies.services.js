@@ -56,30 +56,27 @@ class UserMoviesServices {
 
   async getByUserIdAndMovieId(user_id, movie_id) {
     // Método adicional para obtener el documento `userMovies` por `user_id` y `movie_id`
-    return await userMoviesDao.getByUserIdAndMovieId(user_id, movie_id);
+    try {
+      const userMovies = await userMoviesDao.getById(user_id)
+      console.log("🚀 ~ UserMoviesServices ~ getByUserIdAndMovieId ~ userMovies:", userMovies)
+      const userMovie = userMovies.movies.find(_id == movie_id)
+      console.log("🚀 ~ UserMoviesServices ~ getByUserIdAndMovieId ~ movie:", userMovie)
+      return userMovie
+    } catch (error){
+      console.error("Error in getUserMovie", error)
+      throw error
+    }
   }
 
   async updateMovie(user_id, movie_id, data) {
     try {
       const userMovies = await userMoviesDao.getByUserId(user_id);
-      console.log(
-        "🚀 ~ UserMoviesServices ~ updateMovie ~ userMovies:",
-        userMovies
-      );
       if (!userMovies) {
         throw new Error("User movies not found");
       }
       const movie = userMovies.movies.find(
         (m) => m._id._id.toString() === movie_id
       );
-      // console.log("🚀 ~ UserMoviesServices ~ updateMovie ~ userMovies.movies:", userMovies.movies)
-
-      console.log(
-        "🚀 ~ UserMoviesServices ~ updateMovie ~ movie_id:",
-        movie_id
-      );
-      console.log("🚀🚀🚀 ~ UserMoviesServices ~ updateMovie ~ movie:", movie);
-
       if (!movie) {
         throw new Error("Movie not found in user's movies");
       }

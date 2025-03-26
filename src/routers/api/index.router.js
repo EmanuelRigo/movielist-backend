@@ -14,7 +14,7 @@ class IndexRouter extends CustomRouter {
         this.use("/movies", ["PUBLIC"], moviesRouter)
         this.use("/sessions", ["PUBLIC"], sessionRouter)
         this.use("/cookies", ["PUBLIC"], cookiesRouter)
-        this.use("/userMovies", ["PUBLIC"], userMoviesRouter)
+        this.use("/usermovies", ["PUBLIC"], userMoviesRouter)
     }
 
 }

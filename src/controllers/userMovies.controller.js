@@ -23,47 +23,50 @@ class UserMoviesController {
 
   async addMovie(req, res) {
     const data = req.body;
-    const { id, formats} = req.body;
-
+    const { id, formats } = req.body;
+  
     try {
       const token = req.cookies.token;
       if (!token) {
         return res.json401("No token provided");
       }
-
+  
       const decoded = jwt.verify(token, envsUtils.SECRET_KEY);
       const user_id = decoded.user_id;
-
+  
       async function checkExistsInUserMovies(movieToAdd) {
+        console.log("🚀 ~ UserMoviesController ~ checkExistsInUserMovies ~ movieToAdd:", movieToAdd);
+  
         const existingUserMovie = await userMoviesServices.getByUserId(user_id);
         if (
           existingUserMovie.movies.find(
             (movie) => movie._id._id.toString() === movieToAdd._id.toString()
           )
         ) {
+          console.log("::::: YA EXISTE::::::::");
           return res.json200(
             existingUserMovie,
             "Movie already exists in userMovies"
           );
+        } else {
+          const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
+            _id: movieToAdd._id,
+            checked: false,
+            formats,
+          });
+          return res.json200(updatedUserMovies, "Added to userMovies");
         }
-        const updatedUserMovies = await userMoviesServices.addMovie(user_id, {
-          _id: movieToAdd._id,
-          checked: false,
-          formats,
-        });
-
-        return res.json200(updatedUserMovies, "Added to userMovies");
       }
-
-      // check if movie exists in movies collection
+  
+      // Verificar si la película ya existe en la colección `movies`
       const existingMovie = await moviesServices.getByIdAPI(id);
       if (existingMovie) {
-        checkExistsInUserMovies(existingMovie);
+        return checkExistsInUserMovies(existingMovie); // Agregar `return` para detener la ejecución
       }
-
+  
+      // Crear la película si no existe y luego verificar
       const newMovie = await moviesServices.create(data);
-       checkExistsInUserMovies(newMovie);
-
+      return checkExistsInUserMovies(newMovie); // Agregar `return` para detener la ejecución
     } catch (error) {
       console.error("Error in addMovie:", error);
       return res.json500("Internal Server Error");

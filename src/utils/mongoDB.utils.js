@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
+import envsUtils from "./envs.utils.js";
 
 class MongoSingleton{
   static #instance; 
   static getInstance() {
     if(!MongoSingleton.#instance) {
-      mongoose.connect('mongodb://127.0.0.1:27017/movies')
+      mongoose.connect(envsUtils.MONGO_LINK)
       MongoSingleton.#instance = mongoose.connection
       console.log("Conexión a MongoDB establecida")
   } else {

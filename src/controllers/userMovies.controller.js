@@ -65,6 +65,7 @@ class UserMoviesController {
       }
   
       // Crear la película si no existe y luego verificar
+      console.log("dataaa:::!!", data)
       const newMovie = await moviesServices.create(data);
       return checkExistsInUserMovies(newMovie); // Agregar `return` para detener la ejecución
     } catch (error) {

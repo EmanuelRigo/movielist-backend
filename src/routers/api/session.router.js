@@ -10,6 +10,11 @@ class SessionRouter extends CustomRouter {
     this.init();
   }
   init = () => {
+    // Root route for sessions
+    this.read("/", ["PUBLIC"], (req, res) => {
+      res.send("¡Bienvenido a las sesiones de la API de MovieList!");
+    });
+
     //REGISTER
     this.create(
       "/register",
@@ -77,15 +82,15 @@ async function register(req, res) {
 async function login(req, res) {
   try {
     const token = req.token;
-    const name = req.user.username; 
-    const optsToken = { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true }; 
-    const optsName = { maxAge: 60 * 60 * 24 * 7 * 1000 }; 
+    const name = req.user.username;
+    const optsToken = { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true };
+    const optsName = { maxAge: 60 * 60 * 24 * 7 * 1000 };
     const message = "USER LOGGED IN";
     const response = "ok";
 
     return res
-      .cookie("token", token, optsToken) 
-      .cookie("name", name, optsName) 
+      .cookie("token", token, optsToken)
+      .cookie("name", name, optsName)
       .json200(response, message);
   } catch (error) {
     console.error("Error during login:", error);
@@ -98,22 +103,6 @@ function signout(req, res) {
   const message = "SIGN OUT";
   return res.clearCookie("token").json200(response, message);
 }
-
-// async function online(req, res, next) {
-//   const { token } = req.headers;
-//   const data = verifyTokenUtil(token);
-//   const one = await userController.getById(data.user_id);
-//   if (one) {
-//     return res.status(200).json({
-//       message: one.email.toUpperCase() + " IS ONLINE",
-//       online: true,
-//     });
-//   } else {
-//     return res
-//       .status(400)
-//       .json({ message: "USER IS NOT ONLINE", online: false });
-//   }
-// }
 
 async function onlineToken(req, res, next) {
   const message = req.user.email.toUpperCase() + " IS ONLINE";

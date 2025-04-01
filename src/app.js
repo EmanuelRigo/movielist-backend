@@ -2,7 +2,7 @@ import express from "express";
 import http from "http";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
-import cors from 'cors'
+import cors from 'cors';
 import indexRouter from "./routers/api/index.router.js";
 import MongoSingleton from "./utils/mongoDB.utils.js";
 import pathHandler from "./middlewares/pathHandler.middleware.js";
@@ -21,9 +21,12 @@ app.use(cookieParser(envsUtils.SECRET_KEY));
 //CORS
 app.use(cors({ origin: true, credentials: true }));
 
+MongoSingleton.getInstance();
 
-MongoSingleton.getInstance()
-
+// Middleware para mostrar un mensaje al entrar en la raíz
+app.get("/", (req, res) => {
+  res.send("¡Bienvenido a la API de MovieList!");
+});
 
 //another middleware it can be deleted
 app.use((req, res, next) => {
@@ -39,4 +42,4 @@ app.listen(port, () => {
 });
 
 app.use(errorHandler);
-app.use(pathHandler)
+app.use(pathHandler);

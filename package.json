@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --watch src/app.js",
+    "dev": "node --watch app.js",
     "start:dev": "node src/app.js"
   },
   "keywords": [],

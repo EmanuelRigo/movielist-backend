@@ -51,6 +51,7 @@ class UserMoviesDao {
 
     return updatedUserMovies;
   }
+
 }
 
 export const userMoviesDao = new UserMoviesDao();

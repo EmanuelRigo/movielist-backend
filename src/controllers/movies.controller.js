@@ -21,9 +21,6 @@ class MovieController {
   async create(req, res) {
     const message = "movie created";
     const data = req.body;  
-    console.log("🚀 ~ MovieController ~ create ~ data:", data)
-    
-    // const existMovie = await moviesServices.getByIdAPI(data.id)
 
     const response = await moviesServices.create(data);
 

@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Strategy as GoogleStrategy } from "passport-google-oauth2";
+i//mport { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 
 import { createHashUtil, verifyHashUtil  } from "../utils/hash.util.js";
@@ -131,34 +131,34 @@ passport.use(
   )
 );
 //--GOOGLE
-passport.use(
-  "google",
-  new GoogleStrategy(
-    {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      passReqToCallback: true,
-      callbackURL: BASE_URL + "sessions/google/cb",
-    },
-    async (req, accessToken, refreshToken, profile, done) => {
-      try {
-        const { id, picture } = profile;
-        let user = await userServices.getByEmail(id);
-        if (!user) {
-          user = await userServices.create({
-            email: id,
-            photo: picture,
-            password: createHashUtil(id),
-          });
-        }
-        req.token = createTokenUtil({ role: user.role, user: user._id });
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    }
-  )
-);
+// passport.use(
+//   "google",
+//   new GoogleStrategy(
+//     {
+//       clientID: GOOGLE_CLIENT_ID,
+//       clientSecret: GOOGLE_CLIENT_SECRET,
+//       passReqToCallback: true,
+//       callbackURL: BASE_URL + "sessions/google/cb",
+//     },
+//     async (req, accessToken, refreshToken, profile, done) => {
+//       try {
+//         const { id, picture } = profile;
+//         let user = await userServices.getByEmail(id);
+//         if (!user) {
+//           user = await userServices.create({
+//             email: id,
+//             photo: picture,
+//             password: createHashUtil(id),
+//           });
+//         }
+//         req.token = createTokenUtil({ role: user.role, user: user._id });
+//         return done(null, user);
+//       } catch (error) {
+//         return done(error);
+//       }
+//     }
+//   )
+// );
 //--SIGNOUT
 passport.use(
   "signout",

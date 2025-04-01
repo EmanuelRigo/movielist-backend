@@ -70,7 +70,7 @@ passport.use(
           
         if (!user) {
           const info = {
-            message: "INVALID CREDENTIALS",
+            message: "INVALID CREDENTIALS1",
             statusCode: 401,
           };
           return done(null, false, info);
@@ -79,7 +79,7 @@ passport.use(
         const verify = verifyHashUtil(password, user.password);
         if (!verify) {
           const info = {
-            message: "INVALID CREDENTIALS",
+            message: "INVALID CREDENTIALS2",
             statusCode: 401,
           };
           return done(null, false, info);

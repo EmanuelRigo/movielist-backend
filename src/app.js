@@ -3,11 +3,11 @@ import http from "http";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import cors from 'cors';
-import indexRouter from "./src/routers/api/index.router.js";
-import MongoSingleton from "./src/utils/mongoDB.utils.js";
-import pathHandler from "./src/middlewares/pathHandler.middleware.js";
-import errorHandler from "./src/middlewares/errorHandler.middleware.js";
-import envsUtils from "./src/utils/envs.utils.js";
+import indexRouter from "./routers/api/index.router.js";
+import MongoSingleton from "./utils/mongoDB.utils.js";
+import pathHandler from "./middlewares/pathHandler.middleware.js";
+import errorHandler from "./middlewares/errorHandler.middleware.js";
+import envsUtils from "./utils/envs.utils.js";
 
 //server
 const app = express();

@@ -83,7 +83,7 @@ async function login(req, res) {
   try {
     const token = req.token;
     const name = req.user.username;
-    const optsToken = { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true };
+    const optsToken = { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true};
     const optsName = { maxAge: 60 * 60 * 24 * 7 * 1000 };
     const message = "USER LOGGED IN";
     const response = "ok";

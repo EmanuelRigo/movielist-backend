@@ -142,7 +142,7 @@ class UserMoviesController {
         mid,
         data
       );
-      return res.json200(userMovies, "ok");
+      return res.json200(userMovies, "Updated with success");
     } catch (error) {
       console.error("Error in updateMovie:", error);
       return res.json500("Internal Server Error");

@@ -74,25 +74,29 @@ class UserMoviesServices {
       if (!userMovies) {
         throw new Error("User movies not found");
       }
+  
       const movie = userMovies.movies.find(
         (m) => m._id._id.toString() === movie_id
       );
       if (!movie) {
         throw new Error("Movie not found in user's movies");
       }
-
+  
       // Actualizar los campos de la película
       Object.assign(movie, data);
-
+  
       // Guardar los cambios
       await userMovies.save();
-
-      return userMovies;
+  
+      // Retornar solo la película actualizada
+      return movie;
     } catch (error) {
       console.error("Error in updateMovie service:", error);
       throw error;
     }
   }
+
+
 }
 
 const userMoviesServices = new UserMoviesServices();

@@ -9,7 +9,7 @@ cookiesRouter.post("/create", (req, res, next) => {
     return res
       .status(200)
       .cookie("mode", mode || "light", {
-        secure: false, // Solo se envía en conexiones HTTPS
+        secure: true, // Solo se envía en conexiones HTTPS
         sameSite: "None", // Permitir solicitudes entre diferentes orígenes
         httpOnly: false, // Opcional: si no necesitas que sea accesible solo desde el servidor
       })

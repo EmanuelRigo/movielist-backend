@@ -19,11 +19,11 @@ app.use(logger("dev"));
 app.use(cookieParser(envsUtils.SECRET_KEY));
 
 //CORS
-// app.use(cors({ origin: true, credentials: true }));
-const allowedOrigins = [
-  "http://localhost:3000", // Desarrollo local
-  "https://movie-list-rvqh.vercel.app", // Producción
-];
+app.use(cors({ origin: true, credentials: true }));
+// const allowedOrigins = [
+//   "http://localhost:3000", // Desarrollo local
+//   "https://movie-list-rvqh.vercel.app", // Producción
+// ];
 
 app.use(
   cors({

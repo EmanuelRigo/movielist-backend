@@ -22,7 +22,7 @@ app.use(cookieParser(envsUtils.SECRET_KEY));
 // app.use(cors({ origin: true, credentials: true }));
 const allowedOrigins = [
   "http://localhost:3000", // Desarrollo local
-  "https://tu-dominio-frontend.vercel.app", // Producción
+  "https://movie-list-rvqh.vercel.app", // Producción
 ];
 
 app.use(

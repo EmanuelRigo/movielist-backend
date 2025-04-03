@@ -8,13 +8,16 @@ cookiesRouter.post("/create", (req, res, next) => {
     const message = "cookie created";
     return res
       .status(200)
-      .cookie("mode", mode || "light")
+      .cookie("mode", mode || "light", {
+        secure: true, // Solo se envía en conexiones HTTPS
+        sameSite: "None", // Permitir solicitudes entre diferentes orígenes
+        httpOnly: false, // Opcional: si no necesitas que sea accesible solo desde el servidor
+      })
       .json({ message });
   } catch (error) {
     return next(error);
   }
 });
-
 cookiesRouter.get("/read", (req, res, next) => {
   try {
     const mode = req.cookies.mode

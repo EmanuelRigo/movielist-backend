@@ -25,18 +25,18 @@ app.use(cors({ origin: true, credentials: true }));
 //   "https://movie-list-rvqh.vercel.app", // Producción
 // ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin) || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error("No permitido por CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (allowedOrigins.includes(origin) || !origin) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("No permitido por CORS"));
+//       }
+//     },
+//     credentials: true,
+//   })
+// );
 
 MongoSingleton.getInstance();
 

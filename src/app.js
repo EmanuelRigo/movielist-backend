@@ -25,7 +25,7 @@ app.use(cookieParser(envsUtils.SECRET_KEY));
 //   next();
 // })
 //CORS
-// app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 // const allowedOrigins = [
 //   "http://localhost:3000", // Desarrollo local
 //   "https://movie-list-rvqh.vercel.app", // Producción
@@ -46,26 +46,26 @@ app.use(cookieParser(envsUtils.SECRET_KEY));
 //     credentials: true,
 //   })
 // );
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        "http://localhost:3000", // Desarrollo local
-        "https://movie-list-rvqh.vercel.app", // Producción
-      ];
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       const allowedOrigins = [
+//         "http://localhost:3000", // Desarrollo local
+//         "https://movie-list-rvqh.vercel.app", // Producción
+//       ];
 
-      // Permitir solicitudes sin origen (por ejemplo, herramientas como Postman)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("No permitido por CORS"));
-      }
-    },
-    credentials: true, // Permitir cookies
-    methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
-    allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
-  })
-);
+//       // Permitir solicitudes sin origen (por ejemplo, herramientas como Postman)
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("No permitido por CORS"));
+//       }
+//     },
+//     credentials: true, // Permitir cookies
+//     methods: ["GET", "POST", "PUT", "DELETE"], // Métodos permitidos
+//     allowedHeaders: ["Content-Type", "Authorization"], // Encabezados permitidos
+//   })
+// );
 
 MongoSingleton.getInstance();
 

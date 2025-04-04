@@ -49,7 +49,7 @@ class UserMoviesController {
           console.log("::::: YA EXISTE::::::::");
           return res.json200(
             movieExist,
-            "Movie already exists in userMovies"
+            "Movie already exists"
           );
         } else {
           const updatedUserMovies = await userMoviesServices.addMovie(user_id, {

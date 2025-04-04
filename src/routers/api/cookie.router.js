@@ -20,7 +20,7 @@ cookiesRouter.post("/create", (req, res, next) => {
 });
 cookiesRouter.get("/read", (req, res, next) => {
   try {
-    const mode = req.cookies.mode
+    const mode = req.cookies
     const rolDeUsuario = req.cookies.rolDeUsuario 
     const message = "cookie read";
     return res.status(200).json({ mode, rolDeUsuario, message });

@@ -20,10 +20,11 @@ cookiesRouter.post("/create", (req, res, next) => {
 });
 cookiesRouter.get("/read", (req, res, next) => {
   try {
-    const mode = req.cookies
+    const mode = req.cookies.mode
+    const username = req.cookies.name
     const rolDeUsuario = req.cookies.rolDeUsuario 
     const message = "cookie read";
-    return res.status(200).json({ mode, rolDeUsuario, message });
+    return res.status(200).json({ mode, username, rolDeUsuario, message });
   } catch (error) {
     return next(error);
   }

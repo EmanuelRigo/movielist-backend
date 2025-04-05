@@ -83,15 +83,20 @@ async function login(req, res) {
   try {
     const token = req.token;
     const name = req.user.username;
+    const mode = req.user.mode;
     const optsToken = {
       maxAge: 60 * 60 * 24 * 7 * 1000,
       httpOnly: true,
-      secure: true, // Necesario si usas SameSite=None
+      secure: true, 
       sameSite: "None",
     };
     const optsName = {
       maxAge: 60 * 60 * 24 * 7 * 1000,
-      secure: true, // Necesario si usas SameSite=None
+      secure: true, 
+      sameSite: "None",
+    };
+    const optsMode = {
+      secure: true, 
       sameSite: "None",
     };
     const message = "USER LOGGED IN";
@@ -100,6 +105,7 @@ async function login(req, res) {
     return res
       .cookie("token", token, optsToken)
       .cookie("name", name, optsName)
+      .cookie("mode", mode, optsMode)
       .json200(response, message);
   } catch (error) {
     console.error("Error during login:", error);

@@ -31,6 +31,11 @@ const userSchema = new Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  mode: {
+    type: String,
+    enum: ["light", "dark"],
+    default: "light",
+  },
   verifyUser: {
     type: Boolean,
     default: false,

@@ -16,7 +16,7 @@ class CustomRouter {
       }
     });
 
-  responses = (req, res, next) => {
+  responses = (req, res, next) => {   
     res.json200 = (response, message) =>
       res.status(200).json({ response, message });
     res.json201 = (response, message) =>

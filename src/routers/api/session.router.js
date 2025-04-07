@@ -116,7 +116,7 @@ async function login(req, res) {
 function signout(req, res) {
   const response = "OK";
   const message = "SIGN OUT";
-  return res.clearCookie("token").json200(response, message);
+  return res.clearCookie("token" ,{ sameSite: "None", secure: true }).json200(response, message);
 }
 
 async function onlineToken(req, res, next) {

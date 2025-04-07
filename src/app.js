@@ -27,29 +27,29 @@ app.use(cookieParser(envsUtils.SECRET_KEY));
 //CORS
 
 
-// app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 
 
-const allowedOrigins = [
-  "http://localhost:3000", // Desarrollo local
-  "https://movielist-eta.vercel.app/", // Producción
-];
+// const allowedOrigins = [
+//   "http://localhost:3000", // Desarrollo local
+//   "https://movielist-eta.vercel.app/", // Producción
+// ];
 
 
 
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (allowedOrigins.includes(origin) || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error("No permitido por CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (allowedOrigins.includes(origin) || !origin) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("No permitido por CORS"));
+//       }
+//     },
+//     credentials: true,
+//   })
+// );
 
 
 // app.use(

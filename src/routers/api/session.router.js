@@ -114,10 +114,12 @@ async function login(req, res) {
 }
 
 function signout(req, res) {
-  const response = "OK";
-  const message = "SIGN OUT";
-  return res.clearCookie("token" ,{ sameSite: "None", secure: true }).json200(response, message);
+  for (const cookie in req.cookies) {
+    res.clearCookie(cookie, { sameSite: "None", secure: true });
+  }
+  return res.status(200).json({ response: "OK", message: "Todas las cookies eliminadas" });
 }
+
 
 async function onlineToken(req, res, next) {
   console.log("🚀 ~ onlineToken ~ req:", req.user)

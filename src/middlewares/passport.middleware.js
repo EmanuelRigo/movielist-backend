@@ -92,6 +92,7 @@ passport.use(
           user_id: user._id,
           role: user.role,
           isOnline: true,
+          mode: user.mode,
         };
         const token = createTokenUtil(data);
         req.token = token;        
@@ -130,35 +131,7 @@ passport.use(
     }
   )
 );
-//--GOOGLE
-// passport.use(
-//   "google",
-//   new GoogleStrategy(
-//     {
-//       clientID: GOOGLE_CLIENT_ID,
-//       clientSecret: GOOGLE_CLIENT_SECRET,
-//       passReqToCallback: true,
-//       callbackURL: BASE_URL + "sessions/google/cb",
-//     },
-//     async (req, accessToken, refreshToken, profile, done) => {
-//       try {
-//         const { id, picture } = profile;
-//         let user = await userServices.getByEmail(id);
-//         if (!user) {
-//           user = await userServices.create({
-//             email: id,
-//             photo: picture,
-//             password: createHashUtil(id),
-//           });
-//         }
-//         req.token = createTokenUtil({ role: user.role, user: user._id });
-//         return done(null, user);
-//       } catch (error) {
-//         return done(error);
-//       }
-//     }
-//   )
-// );
+
 //--SIGNOUT
 passport.use(
   "signout",
@@ -192,6 +165,7 @@ passport.use(
       secretOrKey: envsUtils.SECRET_KEY,
     },
     async (data, done) => {
+      console.log("🚀 ~ data:", data)
       try {
 
         const { user_id } = data;
@@ -214,8 +188,18 @@ passport.use(
           };
           return done(null, false, info);
         }
+        
+        const userData = {
+          firstName: user.firstname,
+          username: user.username,
+          user_id: user._id,
+          role: user.role,
+          isOnline: user.isOnline,
+          mode: user.mode,
+          email: user.email};
 
-        return done(null, user);
+        console.log("Usuario en línea:", userData);
+        return done(null, userData);
       } catch (error) {
         const info = {
           message: "Error in JWT strategy",
@@ -226,6 +210,7 @@ passport.use(
     }
   )
 );
+
 //--ONLINE LOCALSTRATEGY (NO LO UTILIZO)
 passport.use(
   "onlineLocalStrategy",
@@ -259,5 +244,36 @@ passport.use(
     }
   )
 );
+
+//--GOOGLE
+// passport.use(
+//   "google",
+//   new GoogleStrategy(
+//     {
+//       clientID: GOOGLE_CLIENT_ID,
+//       clientSecret: GOOGLE_CLIENT_SECRET,
+//       passReqToCallback: true,
+//       callbackURL: BASE_URL + "sessions/google/cb",
+//     },
+//     async (req, accessToken, refreshToken, profile, done) => {
+//       try {
+//         const { id, picture } = profile;
+//         let user = await userServices.getByEmail(id);
+//         if (!user) {
+//           user = await userServices.create({
+//             email: id,
+//             photo: picture,
+//             password: createHashUtil(id),
+//           });
+//         }
+//         req.token = createTokenUtil({ role: user.role, user: user._id });
+//         return done(null, user);
+//       } catch (error) {
+//         return done(error);
+//       }
+//     }
+//   )
+// );
+
 
 export default passport;

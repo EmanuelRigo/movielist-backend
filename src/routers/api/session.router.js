@@ -120,8 +120,9 @@ function signout(req, res) {
 }
 
 async function onlineToken(req, res, next) {
+  console.log("🚀 ~ onlineToken ~ req:", req.user)
   const message = req.user.email.toUpperCase() + " IS ONLINE";
-  const response = true;
+  const response = req.user;
   return res.json200(response, message);
 }
 

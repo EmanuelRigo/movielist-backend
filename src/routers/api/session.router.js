@@ -88,16 +88,16 @@ async function login(req, res) {
       maxAge: 60 * 60 * 24 * 7 * 1000,
       httpOnly: true,
       secure: true, 
-      sameSite: "None",
+      sameSite: "none",
     };
     const optsName = {
       maxAge: 60 * 60 * 24 * 7 * 1000,
       secure: true, 
-      sameSite: "None",
+      sameSite: "none",
     };
     const optsMode = {
       secure: true, 
-      sameSite: "None",
+      sameSite: "none",
     };
     const message = "USER LOGGED IN";
     const response = "ok";
